@@ -6,9 +6,21 @@ type Props = {
 }
 
 const PostDetail: NextPage<Props> = ({ post }) => {
+    const createdAt = new Date(post.created_at)
+    const updatedAt = new Date(post.updated_at)
+    const options: Intl.DateTimeFormatOptions = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    }
     return (
         <div>
-            <h1>{post.title}</h1>
+            <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
+            <div className="mb-8 sm:flex sm:gap-8">
+                <p>作成日 {createdAt.toLocaleDateString(undefined, options)}</p>
+                <p>更新日 {updatedAt.toLocaleDateString(undefined, options)}</p>
+            </div>
             <p>{post.content}</p>
         </div>
     )

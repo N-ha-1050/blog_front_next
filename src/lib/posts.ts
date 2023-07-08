@@ -24,7 +24,7 @@ export type Posts = {
     page: number
     has_next: boolean
     has_previous: boolean
-    num_page: number
+    num_pages: number
     results: Post[]
 }
 

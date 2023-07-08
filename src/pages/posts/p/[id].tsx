@@ -1,3 +1,4 @@
+import { NavBar } from "@/components/NavBar"
 import { PostsPreview } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
 import { Posts, getPosts, getPostsIds } from "@/lib/posts"
@@ -8,10 +9,18 @@ type Props = {
 }
 
 const PostList: NextPage<Props> = ({ posts }: Props) => {
+    // const {count, page, has_next: hasNext, has_previous:hasPrevious, num_page: numPage} = posts
     return (
         <SetCenter>
-            <h1>記事一覧</h1>
+            <h1 className="mb-8 text-4xl font-bold">記事一覧</h1>
             <PostsPreview posts={posts} />
+            <NavBar
+                getLink={(pageNum) => `/posts/p/${pageNum}`}
+                page={posts.page}
+                numPages={posts.num_pages}
+                hasNext={posts.has_next}
+                hasPrevious={posts.has_previous}
+            />
         </SetCenter>
     )
 }
