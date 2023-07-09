@@ -47,7 +47,7 @@ export const getPostsIds = async () => {
     const posts = await getPosts({})
     const postsCount = Math.ceil(posts.count / PAGE_SIZE)
     const postsIds = [...Array(postsCount)].map((_, i) => i + 1)
-    console.log(`getPostsIds => ${postsIds}`)
+    // console.log(`getPostsIds => ${postsIds}`)
     return postsIds
 }
 
@@ -60,6 +60,6 @@ export const getPostIds = async () => {
         }),
     )
     const postIds = result.flat()
-    console.log(`getPostIds => ${postIds}`)
+    // console.log(`getPostIds => ${postIds}`)
     return postIds
 }
