@@ -1,8 +1,12 @@
 import { Posts } from "@/lib/posts"
-import { PostPreview } from "./PostPreview"
+import { PostPreview, PostWithPlainText } from "./PostPreview"
+
+export type PostsWithPlainText = Omit<Posts, "results"> & {
+    results: PostWithPlainText[]
+}
 
 type PostsPreviewProps = {
-    posts: Posts
+    posts: PostsWithPlainText
 }
 export const PostsPreview = ({ posts }: PostsPreviewProps) => {
     return (

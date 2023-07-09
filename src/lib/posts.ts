@@ -2,7 +2,7 @@ const API_URL = "http://127.0.0.1:8000"
 // const API_URL = "https://api.blog.n-ha.cf"
 const PAGE_SIZE = 10
 
-type Tag = {
+export type Tag = {
     id: number
     url: string
     name: string
@@ -17,6 +17,7 @@ export type Post = {
     created_at: string
     updated_at: string
     tags: Tag[]
+    // contentHtml?: string
 }
 
 export type Posts = {

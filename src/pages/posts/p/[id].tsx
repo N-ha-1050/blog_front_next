@@ -1,11 +1,13 @@
 import { NavBar } from "@/components/NavBar"
-import { PostsPreview } from "@/components/PostsPreview"
+import { PostsPreview, PostsWithPlainText } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
-import { Posts, getPosts, getPostsIds } from "@/lib/posts"
+import { getPosts, getPostsIds } from "@/lib/posts"
+import MarkdownIt from "markdown-it"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import markdownItPlainText from "markdown-it-plain-text"
 
 type Props = {
-    posts: Posts
+    posts: PostsWithPlainText
 }
 
 const PostList: NextPage<Props> = ({ posts }: Props) => {
@@ -30,8 +32,18 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
     const posts = await getPosts({ id: params.id })
+    const postsWithHtml: PostsWithPlainText = {
+        ...posts,
+        results: posts.results.map((post) => {
+            // Todo: markdown の plaintext の定義
+            const md: MarkdownIt & { plainText?: string } = new MarkdownIt()
+            md.use(markdownItPlainText)
+            md.render(post.content)
+            return { ...post, contentPlainText: md.plainText || "" }
+        }),
+    }
     return {
-        props: { posts },
+        props: { posts: postsWithHtml },
     }
 }
 

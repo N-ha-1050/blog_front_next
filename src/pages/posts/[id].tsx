@@ -1,8 +1,16 @@
 import { Post, getPost, getPostIds } from "@/lib/posts"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 
+import MarkdownIt from "markdown-it"
+import markdownItAnchor from "markdown-it-anchor"
+import markdownItTocRight from "markdown-it-toc-done-right"
+import markdownItFootnote from "markdown-it-footnote"
+import markdownItHighlightjs from "markdown-it-highlightjs"
+import markdownItKatex from "@traptitech/markdown-it-katex"
+
+type PostWithHtml = Post & { contentHtml: string }
 type Props = {
-    post: Post
+    post: PostWithHtml
 }
 
 const PostDetail: NextPage<Props> = ({ post }) => {
@@ -21,7 +29,10 @@ const PostDetail: NextPage<Props> = ({ post }) => {
                 <p>作成日 {createdAt.toLocaleDateString(undefined, options)}</p>
                 <p>更新日 {updatedAt.toLocaleDateString(undefined, options)}</p>
             </div>
-            <p>{post.content}</p>
+            <div
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+            />
         </div>
     )
 }
@@ -31,8 +42,22 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
     const post = await getPost({ id: params.id })
+    const md: MarkdownIt = new MarkdownIt()
+    md.use(markdownItAnchor, {
+        permalink: true,
+        permalinkBefore: true,
+        permalinkSymbol: "§",
+    })
+    md.use(markdownItTocRight, { listType: "ul" })
+    md.use(markdownItFootnote)
+    md.use(markdownItHighlightjs)
+    md.use(markdownItKatex)
+    const postWithHtml: PostWithHtml = {
+        ...post,
+        contentHtml: md.render("## 目次\n[toc]\n\n" + post.content),
+    }
     return {
-        props: { post },
+        props: { post: postWithHtml },
     }
 }
 

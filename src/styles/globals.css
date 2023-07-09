@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.table-of-contents {
+    padding: 10px;
+    margin-bottom: 48px;
+    border-radius: 10px;
+    /* ↓ gray.500 */
+    border-color: #718096;
+    border-width: 3px;
+}
