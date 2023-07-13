@@ -7,6 +7,7 @@ import markdownItTocRight from "markdown-it-toc-done-right"
 import markdownItFootnote from "markdown-it-footnote"
 import markdownItHighlightjs from "markdown-it-highlightjs"
 import markdownItKatex from "@traptitech/markdown-it-katex"
+import { TagBudge } from "@/components/TagBudge"
 
 type PostWithHtml = Post & { contentHtml: string }
 type Props = {
@@ -25,6 +26,9 @@ const PostDetail: NextPage<Props> = ({ post }) => {
     return (
         <div>
             <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
+            {post.tags.map((tag) => {
+                return <TagBudge key={tag.id} tag={tag} />
+            })}
             <div className="mb-8 sm:flex sm:gap-8">
                 <p>作成日 {createdAt.toLocaleDateString(undefined, options)}</p>
                 <p>更新日 {updatedAt.toLocaleDateString(undefined, options)}</p>
@@ -63,8 +67,8 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const postIds = await getPostIds()
-    const paths = postIds.map((postId) => ({
-        params: { id: postId.toString() },
+    const paths = postIds.map((id) => ({
+        params: { id: id.toString() },
     }))
     return {
         paths,

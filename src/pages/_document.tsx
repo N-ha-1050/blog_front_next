@@ -4,7 +4,7 @@ export default function Document() {
     return (
         <Html lang="ja">
             <Head>
-                <link rel="icon" href="./favicon.svg" />
+                <link rel="icon" href="/favicon/favicon.svg" />
                 <link
                     rel="stylesheet"
                     href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css"

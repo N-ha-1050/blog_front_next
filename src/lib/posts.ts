@@ -9,7 +9,14 @@ export type Tag = {
     url: string
     name: string
 }
-
+export type Tags = {
+    count: number
+    page: number
+    has_next: boolean
+    has_previous: boolean
+    num_pages: number
+    results: Tag[]
+}
 export type Post = {
     id: number
     url: string
@@ -31,12 +38,45 @@ export type Posts = {
     results: Post[]
 }
 
-export const getPosts = async ({ id = 1 }: { id?: number | string }) => {
+export const getPosts = async ({ page = 1 }: { page?: number | string }) => {
     const res = await fetch(
-        `${API_URL}/posts/?is_visible=true&ordering=-id&page=${id}`,
+        `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
     )
     const posts = (await res.json()) as Posts
     return posts
+}
+export const getTagPosts = async ({
+    id,
+    page = 1,
+}: {
+    id: number | string
+    page?: number | string
+}) => {
+    const res = await fetch(
+        `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
+    )
+    const posts = (await res.json()) as Posts
+    return posts
+}
+
+export const getSearchPosts = async ({
+    search = "",
+    page = 1,
+}: {
+    search?: string
+    page?: number | string
+}) => {
+    const res = await fetch(
+        `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
+    )
+    const posts = (await res.json()) as Posts
+    return posts
+}
+
+export const getTags = async ({ page = 1 }: { page?: number | string }) => {
+    const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+    const tags = (await res.json()) as Tags
+    return tags
 }
 
 export const getPost = async ({ id }: { id: number | string }) => {
@@ -45,23 +85,60 @@ export const getPost = async ({ id }: { id: number | string }) => {
     return post
 }
 
-export const getPostsIds = async () => {
+export const getTag = async ({ id }: { id: number | string }) => {
+    const res = await fetch(`${API_URL}/tags/${id}/`)
+    const tag = (await res.json()) as Tag
+    return tag
+}
+
+export const getPostsPages = async () => {
     const posts = await getPosts({})
-    const postsCount = Math.ceil(posts.count / PAGE_SIZE)
-    const postsIds = [...Array(postsCount)].map((_, i) => i + 1)
+    // const postsNumPages = posts.num_pages
+    const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
+    // const postsCount = Math.ceil(posts.count / PAGE_SIZE)
+    // const postsPages = [...Array(postsCount)].map((_, i) => i + 1)
     // console.log(`getPostsIds => ${postsIds}`)
-    return postsIds
+    return postsPages
+}
+export const getTagPostsPages = async ({ id }: { id: number | string }) => {
+    const posts = await getTagPosts({ id })
+    const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
+    return postsPages
+}
+export const getTagsPages = async () => {
+    const tags = await getTags({})
+    const tagsPages = [...Array(tags.num_pages)].map((_, i) => i + 1)
+    return tagsPages
+}
+export const getPostsTagPages = async ({ id = 1 }: { id: number | string }) => {
+    const posts = await getTagPosts({ id })
+    const postsCount = Math.ceil(posts.count / PAGE_SIZE)
+    const postsPages = [...Array(postsCount)].map((_, i) => i + 1)
+    // console.log(`getPostsIds => ${postsIds}`)
+    return postsPages
 }
 
 export const getPostIds = async () => {
-    const postsIds = await getPostsIds()
+    const postsPages = await getPostsPages()
     const result = await Promise.all(
-        postsIds.map(async (id) => {
-            const posts = await getPosts({ id })
+        postsPages.map(async (page) => {
+            const posts = await getPosts({ page })
             return posts.results.map((post) => post.id)
         }),
     )
     const postIds = result.flat()
     // console.log(`getPostIds => ${postIds}`)
     return postIds
+}
+
+export const getTagIds = async () => {
+    const tagsPages = await getTagsPages()
+    const result = await Promise.all(
+        tagsPages.map(async (page) => {
+            const tags = await getTags({ page })
+            return tags.results.map((tag) => tag.id)
+        }),
+    )
+    const tagIds = result.flat()
+    return tagIds
 }

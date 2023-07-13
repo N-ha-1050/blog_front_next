@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/NavBar"
 import { PostsPreview, PostsWithPlainText } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
-import { getPosts, getPostsIds } from "@/lib/posts"
+import { getPosts, getPostsPages } from "@/lib/posts"
 import MarkdownIt from "markdown-it"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import markdownItPlainText from "markdown-it-plain-text"
@@ -28,29 +28,28 @@ const PostList: NextPage<Props> = ({ posts }: Props) => {
 }
 export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     const { params } = ctx
-    if (!(typeof params?.id === "string")) {
+    if (!(typeof params?.page === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const posts = await getPosts({ id: params.id })
-    const postsWithHtml: PostsWithPlainText = {
+    const posts = await getPosts({ page: params.page })
+    const postsWithPlainText: PostsWithPlainText = {
         ...posts,
         results: posts.results.map((post) => {
-            // Todo: markdown の plaintext の定義
-            const md: MarkdownIt & { plainText?: string } = new MarkdownIt()
+            const md = new MarkdownIt()
             md.use(markdownItPlainText)
             md.render(post.content)
-            return { ...post, contentPlainText: md.plainText || "" }
+            return { ...post, contentPlainText: (md as any).plainText || "" }
         }),
     }
     return {
-        props: { posts: postsWithHtml },
+        props: { posts: postsWithPlainText },
     }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const postsIds = await getPostsIds()
-    const paths = postsIds.map((postsId) => ({
-        params: { id: postsId.toString() },
+    const postsPages = await getPostsPages()
+    const paths = postsPages.map((page) => ({
+        params: { page: page.toString() },
     }))
     return {
         paths,
