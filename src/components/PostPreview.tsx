@@ -15,9 +15,11 @@ export const PostPreview = ({ post }: PostPreviewProps) => {
             className="p-8 w-72 border-2 border-blue-200 rounded-lg duration-200 hover:border-blue-800 hover:opacity-80 hover:bg-blue-50"
         >
             <p className="text-lg font-bold truncate">{post.title}</p>
-            {post.tags.map((tag) => (
-                <TagBudgeMini key={tag.id} tag={tag} />
-            ))}
+            <div className="flex gap-1">
+                {post.tags.map((tag) => (
+                    <TagBudgeMini key={tag.id} tag={tag} />
+                ))}
+            </div>
             <p className="indent-4 truncate">{post.contentPlainText}</p>
         </Link>
     )
