@@ -18,7 +18,9 @@ const PostSearchList: NextPage<Props> = ({ search, posts }) => {
     const [text, setText] = React.useState<string>(search)
     return (
         <SetCenter>
-            <h1 className="mb-8 text-4xl font-bold">{search} の記事一覧</h1>
+            <h1 className="mb-8 text-4xl font-bold">
+                {search} {search && "の"}記事一覧
+            </h1>
             <div className="flex gap-2 mb-4">
                 <input
                     className="border-2 border-blue-950 rounded"
