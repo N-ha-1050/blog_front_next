@@ -3,6 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 // const API_URL = "http://127.0.0.1:8000"
 // const API_URL = "https://api.blog.n-ha.cf"
 const PAGE_SIZE = 10
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export type Tag = {
     id: number
@@ -39,7 +40,7 @@ export type Posts = {
 
 export const getPosts = async ({ page = 1 }: { page?: number | string }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(
             `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
         )
@@ -58,7 +59,7 @@ export const getTagPosts = async ({
     page?: number | string
 }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(
             `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
         )
@@ -78,7 +79,7 @@ export const getSearchPosts = async ({
     page?: number | string
 }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(
             `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
         )
@@ -92,7 +93,7 @@ export const getSearchPosts = async ({
 
 export const getTags = async ({ page = 1 }: { page?: number | string }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
     }
     // const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
@@ -102,7 +103,7 @@ export const getTags = async ({ page = 1 }: { page?: number | string }) => {
 
 export const getPost = async ({ id }: { id: number | string }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(`${API_URL}/posts/${id}/`)
     }
     // const res = await fetch(`${API_URL}/posts/${id}/`)
@@ -112,7 +113,7 @@ export const getPost = async ({ id }: { id: number | string }) => {
 
 export const getTag = async ({ id }: { id: number | string }) => {
     let res: Response | undefined = undefined
-    for (; !res?.ok; ) {
+    for (; !res?.ok; await sleep(1000)) {
         res = await fetch(`${API_URL}/tags/${id}/`)
     }
     // const res = await fetch(`${API_URL}/tags/${id}/`)
