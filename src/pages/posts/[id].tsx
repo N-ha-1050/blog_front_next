@@ -27,9 +27,11 @@ const PostDetail: NextPage<Props> = ({ post }) => {
     return (
         <SetInline>
             <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
-            {post.tags.map((tag) => {
-                return <TagBudge key={tag.id} tag={tag} />
-            })}
+            <div className="flex gap-2">
+                {post.tags.map((tag) => {
+                    return <TagBudge key={tag.id} tag={tag} />
+                })}
+            </div>
             <div className="mb-8 sm:flex sm:gap-8">
                 <p>作成日 {createdAt.toLocaleDateString(undefined, options)}</p>
                 <p>更新日 {updatedAt.toLocaleDateString(undefined, options)}</p>
