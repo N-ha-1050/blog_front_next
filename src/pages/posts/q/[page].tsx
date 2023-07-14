@@ -21,7 +21,7 @@ const PostSearchList: NextPage<Props> = ({ search, posts }) => {
             <h1 className="mb-8 text-4xl font-bold">
                 {search} {search && "の"}記事一覧
             </h1>
-            <SearchBox />
+            <SearchBox search={search} />
             <PostsPreview posts={posts} />
             <NavBar
                 getLink={(pageNum) => `/posts/q/${pageNum}?search=${search}`}
