@@ -8,6 +8,7 @@ import markdownItFootnote from "markdown-it-footnote"
 import markdownItHighlightjs from "markdown-it-highlightjs"
 import markdownItKatex from "@traptitech/markdown-it-katex"
 import { TagBudge } from "@/components/TagBudge"
+import { SetInline } from "@/components/SetInline"
 
 type PostWithHtml = Post & { contentHtml: string }
 type Props = {
@@ -24,7 +25,7 @@ const PostDetail: NextPage<Props> = ({ post }) => {
         day: "numeric",
     }
     return (
-        <div>
+        <SetInline>
             <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
             {post.tags.map((tag) => {
                 return <TagBudge key={tag.id} tag={tag} />
@@ -37,7 +38,7 @@ const PostDetail: NextPage<Props> = ({ post }) => {
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: post.contentHtml }}
             />
-        </div>
+        </SetInline>
     )
 }
 export const getStaticProps: GetStaticProps<Props> = async (ctx) => {

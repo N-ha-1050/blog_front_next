@@ -8,6 +8,7 @@ import MarkdownIt from "markdown-it"
 import markdownItPlainText from "markdown-it-plain-text"
 import React from "react"
 import Link from "next/link"
+import SearchBox from "@/components/SearchBox"
 
 type Props = {
     posts: PostsWithPlainText
@@ -15,23 +16,12 @@ type Props = {
 }
 
 const PostSearchList: NextPage<Props> = ({ search, posts }) => {
-    const [text, setText] = React.useState<string>(search)
     return (
         <SetCenter>
             <h1 className="mb-8 text-4xl font-bold">
                 {search} {search && "の"}記事一覧
             </h1>
-            <div className="flex gap-2 mb-4">
-                <input
-                    className="border-2 border-blue-950 rounded"
-                    type="search"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                />
-                <Link href={`/posts/q/1?search=${encodeURI(text)}`}>
-                    <button>検索</button>
-                </Link>
-            </div>
+            <SearchBox />
             <PostsPreview posts={posts} />
             <NavBar
                 getLink={(pageNum) => `/posts/q/${pageNum}?search=${search}`}
