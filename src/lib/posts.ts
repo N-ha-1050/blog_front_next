@@ -26,7 +26,6 @@ export type Post = {
     created_at: string
     updated_at: string
     tags: Tag[]
-    // contentHtml?: string
 }
 
 export type Posts = {
@@ -39,9 +38,15 @@ export type Posts = {
 }
 
 export const getPosts = async ({ page = 1 }: { page?: number | string }) => {
-    const res = await fetch(
-        `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
-    )
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(
+            `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
+        )
+    }
+    // const res = await fetch(
+    //     `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
+    // )
     const posts = (await res.json()) as Posts
     return posts
 }
@@ -52,9 +57,15 @@ export const getTagPosts = async ({
     id: number | string
     page?: number | string
 }) => {
-    const res = await fetch(
-        `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
-    )
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(
+            `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
+        )
+    }
+    // const res = await fetch(
+    //     `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
+    // )
     const posts = (await res.json()) as Posts
     return posts
 }
@@ -66,27 +77,45 @@ export const getSearchPosts = async ({
     search?: string
     page?: number | string
 }) => {
-    const res = await fetch(
-        `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
-    )
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(
+            `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
+        )
+    }
+    // const res = await fetch(
+    //     `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
+    // )
     const posts = (await res.json()) as Posts
     return posts
 }
 
 export const getTags = async ({ page = 1 }: { page?: number | string }) => {
-    const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+    }
+    // const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
     const tags = (await res.json()) as Tags
     return tags
 }
 
 export const getPost = async ({ id }: { id: number | string }) => {
-    const res = await fetch(`${API_URL}/posts/${id}/`)
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(`${API_URL}/posts/${id}/`)
+    }
+    // const res = await fetch(`${API_URL}/posts/${id}/`)
     const post = (await res.json()) as Post
     return post
 }
 
 export const getTag = async ({ id }: { id: number | string }) => {
-    const res = await fetch(`${API_URL}/tags/${id}/`)
+    let res: Response | undefined = undefined
+    for (; !res?.ok; ) {
+        res = await fetch(`${API_URL}/tags/${id}/`)
+    }
+    // const res = await fetch(`${API_URL}/tags/${id}/`)
     const tag = (await res.json()) as Tag
     return tag
 }
