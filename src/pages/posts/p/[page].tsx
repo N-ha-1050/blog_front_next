@@ -31,7 +31,7 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     if (!(typeof params?.page === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const posts = await getPosts({ page: params.page })
+    const posts = await getPosts({ page: params.page, reqLoop: true })
     const postsWithPlainText: PostsWithPlainText = {
         ...posts,
         results: posts.results.map((post) => {

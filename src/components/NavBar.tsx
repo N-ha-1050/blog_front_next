@@ -16,27 +16,25 @@ export const NavBar = ({
     numPages,
 }: NavBarProps) => {
     return (
-        <div className="grid">
-            {page !== 1 && page !== 2 && (
-                <>
-                    <NavBarButton to={getLink(1)}>{1}</NavBarButton>-
-                </>
-            )}
-            {hasPrevious && (
-                <NavBarButton to={getLink(page - 1)}>{page - 1}</NavBarButton>
-            )}
-            <NavBarButton to={getLink(page)}>{page}</NavBarButton>
-            {hasNext && (
-                <NavBarButton to={getLink(page + 1)}>{page + 1}</NavBarButton>
-            )}
-            {page !== numPages && page !== numPages - 1 && (
-                <>
-                    -
-                    <NavBarButton to={getLink(numPages)}>
-                        {numPages}
-                    </NavBarButton>
-                </>
-            )}
+        <div className="flex items-center gap-2">
+            <NavBarButton to={page === 1 ? undefined : getLink(page - 1)}>
+                {"«"}
+            </NavBarButton>
+            <NavBarButton to={page === 1 ? undefined : getLink(page - 1)}>
+                {"<"}
+            </NavBarButton>
+            <NavBarButton isMe>{page}</NavBarButton>
+            <NavBarButton
+                to={page === numPages ? undefined : getLink(page + 1)}
+            >
+                {">"}
+            </NavBarButton>
+
+            <NavBarButton
+                to={page === numPages ? undefined : getLink(page + 1)}
+            >
+                {"»"}
+            </NavBarButton>
         </div>
     )
 }

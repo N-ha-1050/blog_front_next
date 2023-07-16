@@ -1,5 +1,5 @@
-import { getPost, getPostIds } from "@/lib/posts"
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { getPost } from "@/lib/posts"
+import { GetServerSideProps, NextPage } from "next"
 
 import MarkdownIt from "markdown-it"
 import markdownItAnchor from "markdown-it-anchor"
@@ -10,6 +10,7 @@ import markdownItKatex from "@traptitech/markdown-it-katex"
 import { TagBudge } from "@/components/TagBudge"
 import { SetInline } from "@/components/SetInline"
 import { Post } from "@/lib/types"
+import nookies from "nookies"
 
 type PostWithHtml = Post & { contentHtml: string }
 type Props = {
@@ -44,12 +45,14 @@ const PostDetail: NextPage<Props> = ({ post }) => {
         </SetInline>
     )
 }
-export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const cookies = nookies.get(ctx)
+
     const { params } = ctx
-    if (!(typeof params?.id === "string")) {
+    if (!(typeof params?.id2 === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const post = await getPost({ id: params.id, reqLoop: true })
+    const post = await getPost({ id: params.id2, cookies })
     const md: MarkdownIt = new MarkdownIt()
     md.use(markdownItAnchor, {
         permalink: true,
@@ -66,17 +69,6 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     }
     return {
         props: { post: postWithHtml },
-    }
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-    const postIds = await getPostIds()
-    const paths = postIds.map((id) => ({
-        params: { id: id.toString() },
-    }))
-    return {
-        paths,
-        fallback: false,
     }
 }
 

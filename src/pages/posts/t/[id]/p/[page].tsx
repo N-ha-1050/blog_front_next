@@ -1,17 +1,12 @@
 import { NavBar } from "@/components/NavBar"
 import { PostsPreview, PostsWithPlainText } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
-import {
-    Tag,
-    getTag,
-    getTagIds,
-    getTagPosts,
-    getTagPostsPages,
-} from "@/lib/posts"
+import { getTag, getTagIds, getTagPosts, getTagPostsPages } from "@/lib/posts"
 import MarkdownIt from "markdown-it"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import markdownItPlainText from "markdown-it-plain-text"
 import { TagBudge } from "@/components/TagBudge"
+import { Tag } from "@/lib/types"
 
 type Props = {
     tag: Tag
@@ -45,8 +40,12 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     ) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const tag = await getTag({ id: params.id })
-    const posts = await getTagPosts({ id: params.id, page: params.page })
+    const tag = await getTag({ id: params.id, reqLoop: true })
+    const posts = await getTagPosts({
+        id: params.id,
+        page: params.page,
+        reqLoop: true,
+    })
     const postsWithPlainText: PostsWithPlainText = {
         ...posts,
         results: posts.results.map((post) => {

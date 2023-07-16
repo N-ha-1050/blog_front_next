@@ -1,4 +1,4 @@
-import { Post } from "@/lib/posts"
+import { Post } from "@/lib/types"
 import Link from "next/link"
 import { TagBudgeMini } from "./TagBudge"
 

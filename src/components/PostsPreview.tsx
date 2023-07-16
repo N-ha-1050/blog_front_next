@@ -1,4 +1,4 @@
-import { Posts } from "@/lib/posts"
+import { Posts } from "@/lib/types"
 import { PostPreview, PostWithPlainText } from "./PostPreview"
 
 export type PostsWithPlainText = Omit<Posts, "results"> & {

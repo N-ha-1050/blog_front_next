@@ -3,11 +3,11 @@ import { PostsPreview, PostsWithPlainText } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
 import { getSearchPosts } from "@/lib/posts"
 import { GetServerSideProps, NextPage } from "next"
+import nookies from "nookies"
 
 import MarkdownIt from "markdown-it"
 import markdownItPlainText from "markdown-it-plain-text"
 import React from "react"
-import Link from "next/link"
 import SearchBox from "@/components/SearchBox"
 
 type Props = {
@@ -34,6 +34,8 @@ const PostSearchList: NextPage<Props> = ({ search, posts }) => {
     )
 }
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const cookies = nookies.get(ctx)
+
     const { params, query } = ctx
     if (!(typeof params?.page === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
@@ -42,6 +44,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const posts = await getSearchPosts({
         page: params.page,
         search,
+        cookies,
     })
     const postsWithPlainText: PostsWithPlainText = {
         ...posts,

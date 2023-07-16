@@ -7,6 +7,7 @@ const menuContents: MenuContentProps[] = [
     { text: "About", to: "/posts/1" },
     { text: "Posts", to: "/posts/p/1" },
     { text: "Search", to: "/posts/q/1" },
+    { text: "User", to: "/user" },
 ]
 export const Header = () => {
     const [isOpen, setOpen] = React.useState<boolean>(false)
