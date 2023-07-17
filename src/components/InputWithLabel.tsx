@@ -1,5 +1,3 @@
-import { LabelHTMLAttributes } from "react"
-
 export const InputWithLabel = ({
     label,
     htmlFor,
