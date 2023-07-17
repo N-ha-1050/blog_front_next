@@ -6,6 +6,10 @@ type SearchBoxProps = {
 const SearchBox = ({ search }: SearchBoxProps) => {
     const [text, setText] = React.useState<string>(search)
     const router = useRouter()
+    const serachRedirect = () => {
+        const params = new URLSearchParams({ search: text })
+        router.push(`/posts/q/1?${params.toString()}`)
+    }
     return (
         <div className="flex mb-4 mx-4 gap-2 items-center border border-blue-800 p-2 rounded-lg">
             <input
@@ -16,14 +20,12 @@ const SearchBox = ({ search }: SearchBoxProps) => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.nativeEvent.isComposing || e.key !== "Enter") return
-                    router.push(`/posts/q/1?search=${encodeURI(text)}`)
+                    serachRedirect()
                 }}
             />
             <button
                 className="bg-blue-600 rounded p-2 text-blue-50 font-bold hover:bg-blue-800 duration-200"
-                onClick={() =>
-                    router.push(`/posts/q/1?search=${encodeURI(text)}`)
-                }
+                onClick={serachRedirect}
             >
                 Search
             </button>
