@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
             account: account || null,
         }
     })
-    console.log(providersAndAccounts)
+    // console.log(providersAndAccounts)
     return {
         props: {
             providersAndAccounts,
