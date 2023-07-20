@@ -1,4 +1,4 @@
-import { Tag } from "@/lib/posts"
+import { Tag } from "@/lib/types"
 import Link from "next/link"
 // Feature Function
 type TagProps = {

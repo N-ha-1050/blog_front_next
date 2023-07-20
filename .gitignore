@@ -33,3 +33,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+src/pages/accounts/[provider]/[uriType]/_callback copy.tsx
+src/pages/accounts/[provider]/[uriType]/_callback_ssr.tsx

@@ -1,4 +1,3 @@
-import { type } from "os"
 import { Cookies, getCookies } from "./cookie"
 import { Post, Posts, Tag, Tags } from "./types"
 
@@ -14,7 +13,7 @@ const getHeaders = ({ cookies }: { cookies: Cookies }) => {
     return headers
 }
 
-type GetProps<GetUrlProps> = {
+export type GetProps<GetUrlProps> = {
     cookies?: Cookies
     reqLoop?: boolean
 } & GetUrlProps
@@ -24,10 +23,14 @@ type Get<T, GetUrlProps> = ({
     ...getUrlProps
 }: GetProps<GetUrlProps>) => Promise<T>
 
-type GetListUrlProps<GetUrlProps> = { page?: string | number } & GetUrlProps
+export type GetListUrlProps<GetUrlProps> = {
+    page?: string | number
+} & GetUrlProps
 type GetList<T, GetUrlProps> = Get<T, GetListUrlProps<GetUrlProps>>
 
-type GetDetailUrlProps<GetUrlProps> = { id: string | number } & GetUrlProps
+export type GetDetailUrlProps<GetUrlProps> = {
+    id: string | number
+} & GetUrlProps
 type GetDetail<T, GetUrlProps> = Get<T, GetDetailUrlProps<GetUrlProps>>
 
 type GetUrl<GetUrlProps> = ({}: GetUrlProps) => string
@@ -37,9 +40,9 @@ type GetDetailUrl<GetUrlProps> = GetUrl<GetDetailUrlProps<GetUrlProps>>
 // type GetListUrl<GetUrlProps> = ({page, ...getListUrlProps}: GetListUrlProps<GetUrlProps>) => string
 // type GetDetailUrl<GetUrlProps> = ({id, ...getDetailUrlProps}: GetDetailUrlProps<GetUrlProps>) => string
 
-type GetNormalUrlProps = {}
-type GetListNormalUrl = GetListUrl<GetNormalUrlProps>
-type GetDetailNormalUrl = GetDetailUrl<GetNormalUrlProps>
+export type GetNormalUrlProps = {}
+export type GetListNormalUrl = GetListUrl<GetNormalUrlProps>
+export type GetDetailNormalUrl = GetDetailUrl<GetNormalUrlProps>
 
 type GetIdUrlProps = { id: number | string }
 type GetListIdUrl = GetListUrl<GetIdUrlProps>
@@ -61,12 +64,12 @@ type GenerateGetList = <T, Props>({
     getUrl: GetListUrl<Props>
 }) => GetList<T, GetListUrlProps<Props>>
 
-const generateGetList: GenerateGetList = <T, Props>({
+export const generateGetList: GenerateGetList = <T, Props>({
     getUrl,
 }: {
-    getUrl: GetListUrl<GetListUrlProps<Props>>
+    getUrl: GetListUrl<Props>
 }) => {
-    const getList: GetList<T, GetListUrlProps<Props>> = async ({
+    const getList: GetList<T, Props> = async ({
         cookies = {},
         reqLoop = false,
         ...getUrlProps
@@ -89,7 +92,7 @@ type GenerateGetDetail = <T, Props>({
 }: {
     getUrl: GetDetailUrl<Props>
 }) => GetDetail<T, GetDetailUrlProps<Props>>
-const generateGetDetail: GenerateGetDetail = <T, Props>({
+export const generateGetDetail: GenerateGetDetail = <T, Props>({
     getUrl,
 }: {
     getUrl: GetDetailUrl<GetDetailUrlProps<Props>>
@@ -272,6 +275,13 @@ export const getTag = generateGetDetail<Tag, GetNormalUrlProps>({
 //     // const res = await fetch(`${API_URL}/tags/${id}/`)
 //     const tag = (await res.json()) as Tag
 //     return tag
+// }
+
+// const generateGetListPages = <T, Props>({getList}: {getList: GetList<T, GetListUrlProps<Props>>}) => {
+//     const getListPages = async ({getListProps}: {getListProps: GetProps<GetListUrlProps<Props>>}) => {
+//         const list = await getList(getListProps)
+//         const listPages = [...Array(list.num_page)].map((_, i) => i + 1)
+//     }
 // }
 
 export const getPostsPages = async () => {

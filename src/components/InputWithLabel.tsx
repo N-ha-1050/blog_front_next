@@ -2,11 +2,13 @@ export const InputWithLabel = ({
     label,
     htmlFor,
     message,
+    messages,
     ...props
 }: {
     label: string
     htmlFor?: string
     message?: string
+    messages?: any
 } & JSX.IntrinsicElements["input"]) => {
     return (
         <div>
@@ -18,6 +20,11 @@ export const InputWithLabel = ({
                 {...props}
             />
             {message && <p className="text-sm text-blue-500 mt-2">{message}</p>}
+            {typeof messages === "object" &&
+                Array.isArray(message) &&
+                message.map((message) => (
+                    <p className="text-sm text-blue-500 mt-2">{message}</p>
+                ))}{" "}
         </div>
     )
 }

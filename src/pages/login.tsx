@@ -1,5 +1,5 @@
 import { SetCenter } from "@/components/SetCenter"
-import { getUser, login } from "@/lib/auth"
+import { getUser, login, providers } from "@/lib/auth"
 import { GetServerSideProps, NextPage } from "next"
 import { useRouter } from "next/router"
 import React from "react"
@@ -7,6 +7,7 @@ import nookies from "nookies"
 import { Button } from "@/components/Button"
 import { Title } from "@/components/Title"
 import { InputWithLabel } from "@/components/InputWithLabel"
+import { SocialLoginButton } from "@/components/SocialLoginButton"
 type Props = {}
 const Login: NextPage<Props> = () => {
     const [username, setUsername] = React.useState<string>("")
@@ -25,12 +26,13 @@ const Login: NextPage<Props> = () => {
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        message={
-                            data?.username &&
-                            typeof data.username === "object" &&
-                            Array.isArray(data.username) &&
-                            data.username[0]
-                        }
+                        messages={data?.username}
+                        // message={
+                        //     data?.username &&
+                        //     typeof data.username === "object" &&
+                        //     Array.isArray(data.username) &&
+                        //     data.username[0]
+                        // }
                     />
                     <InputWithLabel
                         label="Password"
@@ -38,12 +40,13 @@ const Login: NextPage<Props> = () => {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        message={
-                            data?.password &&
-                            typeof data.password === "object" &&
-                            Array.isArray(data.password) &&
-                            data.password[0]
-                        }
+                        messages={data?.password}
+                        // message={
+                        //     data?.password &&
+                        //     typeof data.password === "object" &&
+                        //     Array.isArray(data.password) &&
+                        //     data.password[0]
+                        // }
                     />
                     <Button
                         onClick={async () => {
@@ -51,24 +54,22 @@ const Login: NextPage<Props> = () => {
                                 username,
                                 password,
                             })
-                            console.log(data)
-                            console.log(data?.password)
-                            console.log(
-                                data?.password &&
-                                    typeof data.password === "object",
-                            )
-                            console.log(
-                                data?.password &&
-                                    typeof data.password === "object" &&
-                                    data.password[0],
-                            )
-                            if (isOk) router.push("/user")
+                            if (isOk) {
+                                router.push("/user")
+                                return
+                            }
                             if (data) setData(data)
                         }}
                         fill
                     >
                         Login
                     </Button>
+                    {providers.map((provider) => (
+                        <SocialLoginButton
+                            key={provider.name}
+                            provider={provider}
+                        />
+                    ))}
                 </div>
             </form>
             {data &&
@@ -76,10 +77,7 @@ const Login: NextPage<Props> = () => {
                 Object.entries(data as { [key: string]: any }).map((entry) => {
                     const [key, value] = entry
                     if (key === "username" || key === "password") return
-                    if (
-                        (typeof value !== "object" || !Array.isArray(value)) &&
-                        typeof value !== "string"
-                    )
+                    if (!(Array.isArray(value) || typeof value === "string"))
                         return
                     return (
                         <p className="mt-8">

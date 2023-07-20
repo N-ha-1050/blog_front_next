@@ -19,14 +19,46 @@ const Me: NextPage<Props> = ({ user }) => {
     return (
         <SetCenter>
             <Title>User Detail</Title>
-            <p className="mb-8">ようこそ、{user.username}さん</p>
+            <div className="flex mb-8 gap-4 items-center">
+                <p className="block">ようこそ、{user.username}さん</p>
+                <Button
+                    fill
+                    dangerous
+                    onClick={() => {
+                        router.push("/delete-user")
+                    }}
+                >
+                    Delete User
+                </Button>
+            </div>
             <div className="flex flex-col md:flex-row gap-4">
-                <Link href="/change-username">
+                <Button
+                    onClick={() => {
+                        router.push("/social-accounts")
+                    }}
+                >
+                    Social Accounts
+                </Button>
+                <Button
+                    onClick={() => {
+                        router.push("/change-username")
+                    }}
+                >
+                    Change Username
+                </Button>
+                {/* <Link href="/change-username">
                     <Button>Change Username</Button>
-                </Link>
-                <Link href="/change-password">
+                </Link> */}
+                <Button
+                    onClick={() => {
+                        router.push("/change-password")
+                    }}
+                >
+                    Change Password
+                </Button>
+                {/* <Link href="/change-password">
                     <Button>Change Password</Button>
-                </Link>
+                </Link> */}
                 <Button
                     onClick={async () => {
                         const isOk = await logout() // .then(() => setUser(undefined))
