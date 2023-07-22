@@ -27,12 +27,12 @@ export const providers: Provider[] = [
         scope: ["profile", "email"],
         extraParams: { access_type: "offline" },
     },
-    {
-        name: "github",
-        displayName: "GitHub",
-        authorizationUrl: "https://github.com/login/oauth/authorize",
-        clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-    },
+    // {
+    //     name: "github",
+    //     displayName: "GitHub",
+    //     authorizationUrl: "https://github.com/login/oauth/authorize",
+    //     clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
+    // },
     {
         name: "discord",
         displayName: "Discord",
