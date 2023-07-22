@@ -1,5 +1,11 @@
 import { SetCenter } from "@/components/SetCenter"
-import { Provider, UriType, providers, socialLogin } from "@/lib/auth"
+import {
+    Provider,
+    UriType,
+    getUriTypeInfo,
+    providers,
+    socialLogin,
+} from "@/lib/auth"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -51,17 +57,11 @@ const Callback: NextPage<Props> = ({
         }
         SocialLogin()
     }, [])
-    type UriTypes = { [key in UriType]: { pageName: string; link: string } }
-    const uriTypes: UriTypes = {
-        login: { pageName: "Login", link: "/login" },
-        connect: { pageName: "Connect", link: "/social-accounts" },
-    }
+    const { pageName, link } = getUriTypeInfo(uriType)
     return (
         <SetCenter>
             <p>{msg}</p>
-            <Link href={uriTypes[uriType].link}>
-                Retry to {uriTypes[uriType].pageName}
-            </Link>
+            <Link href={link}>Retry to {pageName}</Link>
         </SetCenter>
     )
 }

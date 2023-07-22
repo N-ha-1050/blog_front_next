@@ -7,16 +7,14 @@ import {
 } from "./posts"
 import { User } from "./types"
 
-const API_AUTH_URL = "http://127.0.0.1:8000/dj-rest-auth"
-// process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/dj-rest-auth"
-const FRONT_ORIGIN =
-    process.env.NEXT_PUBLIC_FRONT_ORIGIN || "http://127.0.0.1:3000"
+const API_AUTH_URL = process.env.NEXT_PUBLIC_API_AUTH_URL
+const FRONT_ORIGIN = process.env.NEXT_PUBLIC_FRONT_ORIGIN
 
 export type Provider = {
     name: string
     displayName: string
     authorizationUrl: string
-    clientId?: string // Todo: env に移行
+    clientId?: string
     scope?: string[]
     extraParams?: { [key in string]: string }
 }
@@ -25,8 +23,7 @@ export const providers: Provider[] = [
         name: "google",
         displayName: "Google",
         authorizationUrl: "https://accounts.google.com/o/oauth2/v2/auth",
-        clientId:
-            "451016244164-9o8ojpt2der61ve498d20udjkmpm44sl.apps.googleusercontent.com",
+        clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         scope: ["profile", "email"],
         extraParams: { access_type: "offline" },
     },
@@ -34,13 +31,13 @@ export const providers: Provider[] = [
         name: "github",
         displayName: "GitHub",
         authorizationUrl: "https://github.com/login/oauth/authorize",
-        clientId: "51f5eea8f15fc4ce12d6",
+        clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
     },
     {
         name: "discord",
         displayName: "Discord",
         authorizationUrl: "https://discord.com/oauth2/authorize",
-        clientId: "1102511944696614982",
+        clientId: process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID,
         scope: ["email", "identify"],
     },
 ]
@@ -50,6 +47,14 @@ type GetProviderUrl = {
     provider: Provider
     uriType: UriType
     state?: string
+}
+export const getUriTypeInfo = (uriType: UriType) => {
+    switch (uriType) {
+        case "login":
+            return { pageName: "Login", link: "/login" }
+        case "connect":
+            return { pageName: "Connect", link: "/social-accounts" }
+    }
 }
 export const getProviderUrl = ({
     provider,
