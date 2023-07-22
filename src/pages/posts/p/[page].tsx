@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const postsPages = await getPostsPages()
+    const postsPages = await getPostsPages({ reqLoop: true })
     const paths = postsPages.map((page) => ({
         params: { page: page.toString() },
     }))

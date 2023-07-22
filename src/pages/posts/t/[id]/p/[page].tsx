@@ -61,10 +61,10 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const tagIds = await getTagIds()
+    const tagIds = await getTagIds({ reqLoop: true })
     const result = await Promise.all(
         tagIds.map(async (id) => {
-            const tagsPostspages = await getTagPostsPages({ id })
+            const tagsPostspages = await getTagPostsPages({ id, reqLoop: true })
             const paths = tagsPostspages.map((page) => ({
                 params: { id: id.toString(), page: page.toString() },
             }))

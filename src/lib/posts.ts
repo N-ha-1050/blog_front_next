@@ -284,8 +284,8 @@ export const getTag = generateGetDetail<Tag, GetNormalUrlProps>({
 //     }
 // }
 
-export const getPostsPages = async () => {
-    const posts = await getPosts({})
+export const getPostsPages = async ({ reqLoop }: { reqLoop?: boolean }) => {
+    const posts = await getPosts({ reqLoop })
     // const postsNumPages = posts.num_pages
     const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
     // const postsCount = Math.ceil(posts.count / PAGE_SIZE)
@@ -293,7 +293,13 @@ export const getPostsPages = async () => {
     // console.log(`getPostsIds => ${postsIds}`)
     return postsPages
 }
-export const getTagPostsPages = async ({ id }: { id: number | string }) => {
+export const getTagPostsPages = async ({
+    id,
+    reqLoop = false,
+}: {
+    id: number | string
+    reqLoop?: boolean
+}) => {
     const posts = await getTagPosts({ id })
     const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
     return postsPages
@@ -311,8 +317,8 @@ export const getPostsTagPages = async ({ id = 1 }: { id: number | string }) => {
     return postsPages
 }
 
-export const getPostIds = async () => {
-    const postsPages = await getPostsPages()
+export const getPostIds = async ({ reqLoop }: { reqLoop?: boolean }) => {
+    const postsPages = await getPostsPages({ reqLoop })
     const result = await Promise.all(
         postsPages.map(async (page) => {
             const posts = await getPosts({ page })
@@ -324,11 +330,11 @@ export const getPostIds = async () => {
     return postIds
 }
 
-export const getTagIds = async () => {
+export const getTagIds = async ({ reqLoop = false }: { reqLoop?: boolean }) => {
     const tagsPages = await getTagsPages()
     const result = await Promise.all(
         tagsPages.map(async (page) => {
-            const tags = await getTags({ page })
+            const tags = await getTags({ page, reqLoop })
             return tags.results.map((tag) => tag.id)
         }),
     )

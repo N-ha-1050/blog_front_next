@@ -70,7 +70,7 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const postIds = await getPostIds()
+    const postIds = await getPostIds({ reqLoop: true })
     const paths = postIds.map((id) => ({
         params: { id: id.toString() },
     }))
