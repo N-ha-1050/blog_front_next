@@ -4,8 +4,8 @@ export type Cookies = {
 
 export const getCookies = (cookies: Cookies) => {
     const headerCookies = Object.entries(cookies)
-        .map((entry) => {
-            const [key, value] = entry
+        .map((cookie) => {
+            const [key, value] = cookie
             return `${key}=${value}`
         })
         .join(";")

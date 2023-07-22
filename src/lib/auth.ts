@@ -70,7 +70,7 @@ export const getProviderUrl = ({
         redirect_uri: redirectUri,
         scope: scope.join(" "),
         response_type: responseType,
-        state: state,
+        state,
         ...provider.extraParams,
     })
     return `${provider.authorizationUrl}?${queryParams.toString()}`
