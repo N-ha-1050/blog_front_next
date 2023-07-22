@@ -49,10 +49,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const cookies = nookies.get(ctx)
 
     const { params } = ctx
-    if (!(typeof params?.id2 === "string")) {
+    if (!(typeof params?.id === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const post = await getPost({ id: params.id2, cookies })
+    const post = await getPost({ id: params.id, cookies })
     const md: MarkdownIt = new MarkdownIt()
     md.use(markdownItAnchor, {
         permalink: true,
