@@ -17,7 +17,7 @@ const Callback: NextPage<Props> = ({
     state,
     provider,
     error,
-    uriType,
+    uriType = "login",
 }) => {
     const [msg, setMsg] = React.useState(error || "Loading...")
     const [isLoggedIn, setLoggedIn] = React.useState<boolean>(false)
@@ -51,10 +51,17 @@ const Callback: NextPage<Props> = ({
         }
         SocialLogin()
     }, [])
+    type UriTypes = { [key in UriType]: { pageName: string; link: string } }
+    const uriTypes: UriTypes = {
+        login: { pageName: "Login", link: "/login" },
+        connect: { pageName: "Connect", link: "/social-accounts" },
+    }
     return (
         <SetCenter>
             <p>{msg}</p>
-            <Link href="/login">Retry to Login</Link>
+            <Link href={uriTypes[uriType].link}>
+                Retry to {uriTypes[uriType].pageName}
+            </Link>
         </SetCenter>
     )
 }

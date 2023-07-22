@@ -24,26 +24,26 @@ const SocialAccounts: NextPage<Props> = ({ providersAndAccounts }) => {
         <SetCenter>
             <Title>Social Accounts</Title>
             <div className="grid gap-4">
-                {providersAndAccounts.map((providersAndAccount) => (
+                {providersAndAccounts.map((providerAndAccount) => (
                     <div
-                        key={providersAndAccount.provider.name}
-                        className="grid grid-cols-3 gap-2 justify-items-stretch items-center border-b-2 border-blue-200 pb-2"
+                        key={providerAndAccount.provider.name}
+                        className="grid grid-cols-3 gap-2 items-end border-b-2 border-blue-200 pb-2"
                     >
                         <h2 className="text-xl">
-                            {providersAndAccount.provider.displayName}
+                            {providerAndAccount.provider.displayName}
                         </h2>
                         <p className="text-blue-600 font-bold self-end justify-self-start">
-                            {providersAndAccount.account
+                            {providerAndAccount.account
                                 ? "Connected"
                                 : "Unconnected"}
                         </p>
-                        {providersAndAccount.account ? (
+                        {providerAndAccount.account ? (
                             <SocialDisconnectButton
-                                account={providersAndAccount.account}
+                                account={providerAndAccount.account}
                             />
                         ) : (
                             <SocialConnectButton
-                                provider={providersAndAccount.provider}
+                                provider={providerAndAccount.provider}
                             />
                         )}
                     </div>
