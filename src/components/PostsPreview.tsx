@@ -16,7 +16,7 @@ export const PostsPreview = ({
     return (
         <div>
             {posts.count === 0 && <p>No posts found.</p>}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {posts.results.map((post) => (
                     <PostPreview
                         key={post.id}

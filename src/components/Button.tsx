@@ -14,7 +14,7 @@ export const Button = ({
     return (
         <button
             type="button"
-            className={`p-4 rounded-md border-2 ring-transparent font-bold outline-none ring-2 focus:ring-offset-2 duration-200 text-sm ${
+            className={`rounded-md border-2 p-4 text-sm font-bold outline-none ring-2 ring-transparent duration-200 focus:ring-offset-2 ${
                 fill
                     ? `border-transparent bg-${color}-600 text-${color}-50 hover:bg-${color}-800 focus:ring-${color}-400`
                     : `border-${color}-400 bg-transparent text-${color}-950 hover:bg-${color}-200 focus:ring-${color}-400`

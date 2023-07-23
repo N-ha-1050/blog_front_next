@@ -32,7 +32,7 @@ export const MenuContent = ({ text, to }: MenuContentProps) => {
     return (
         <li className="self-stretch ">
             <Link href={to}>
-                <p className="text-center text-blue-950 hover:bg-blue-200 m-2 p-2 rounded duration-200 hover:opacity-80">
+                <p className="m-2 rounded p-2 text-center text-blue-950 duration-200 hover:bg-blue-200 hover:opacity-80">
                     {text}
                 </p>
             </Link>

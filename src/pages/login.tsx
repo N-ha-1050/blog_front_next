@@ -19,7 +19,7 @@ const Login: NextPage<Props> = () => {
         <SetCenter>
             <Title>Login</Title>
             <form>
-                <div className="grid gap-y-4 w-60 md:w-80">
+                <div className="grid w-60 gap-y-4 md:w-80">
                     <InputWithLabel
                         label="Username"
                         htmlFor="username"

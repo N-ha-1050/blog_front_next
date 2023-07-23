@@ -14,15 +14,15 @@ export const PostPreview = ({ post, realtime }: PostPreviewProps) => {
     return (
         <Link
             href={link}
-            className="p-8 w-72 border-2 border-blue-200 rounded-lg duration-200 hover:border-blue-800 hover:opacity-80 hover:bg-blue-50"
+            className="w-72 rounded-lg border-2 border-blue-200 p-8 duration-200 hover:border-blue-800 hover:bg-blue-50 hover:opacity-80"
         >
-            <p className="text-lg font-bold truncate">{post.title}</p>
+            <p className="truncate text-lg font-bold">{post.title}</p>
             <div className="flex gap-1">
                 {post.tags.map((tag) => (
                     <TagBudgeMini key={tag.id} tag={tag} />
                 ))}
             </div>
-            <p className="indent-4 truncate">{post.contentPlainText}</p>
+            <p className="truncate indent-4">{post.contentPlainText}</p>
         </Link>
     )
 }

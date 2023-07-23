@@ -14,15 +14,15 @@ export const NavBarButton = ({
 }: NavBarButtonProps) => {
     const res = (
         <div
-            className={`font-bold text-sm ${
+            className={`text-sm font-bold ${
                 isMe
                     ? "text-blue-800"
-                    : `text-blue-50 bg-blue-400 ${
+                    : `bg-blue-400 text-blue-50 ${
                           to
-                              ? "hover:opacity-80 duration-200 hover:bg-blue-600"
+                              ? "duration-200 hover:bg-blue-600 hover:opacity-80"
                               : "opacity-40"
                       }`
-            } w-10 h-10 p-4 inline-flex items-center text-sm font-bold rounded-md duration-200`}
+            } inline-flex h-10 w-10 items-center rounded-md p-4 text-sm font-bold duration-200`}
         >
             {children}
             {/* {to ? <Link href={to}>{children}</Link> : children} */}

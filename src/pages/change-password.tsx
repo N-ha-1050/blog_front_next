@@ -21,7 +21,7 @@ const ChangePassword: NextPage<Props> = ({ user }) => {
     return (
         <SetCenter>
             <Title>Change Password</Title>
-            <div className="grid gap-y-4 w-60 md:w-80">
+            <div className="grid w-60 gap-y-4 md:w-80">
                 <InputWithLabel
                     label="New password1"
                     type="password"
