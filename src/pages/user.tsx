@@ -19,7 +19,7 @@ const Me: NextPage<Props> = ({ user }) => {
     return (
         <SetCenter>
             <Title>User Detail</Title>
-            <div className="flex mb-8 gap-4 items-center">
+            <div className="mb-8 flex items-center gap-4">
                 <p className="block">ようこそ、{user.username}さん</p>
                 <Button
                     fill
@@ -31,7 +31,7 @@ const Me: NextPage<Props> = ({ user }) => {
                     Delete User
                 </Button>
             </div>
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col gap-4 md:flex-row">
                 <Button
                     onClick={() => {
                         router.push("/social-accounts")
