@@ -13,10 +13,8 @@ export const TagBudgeMini = ({ tag }: TagProps) => {
 }
 export const TagBudge = ({ tag }: TagProps) => {
     return (
-        <Link href={`/posts/t/${tag.id}/p/1`}>
-            <p className="duration-200 hover:opacity-80 px-2 py-1 w-max text-blue-950 bg-blue-100 rounded-lg">
-                {tag.name}
-            </p>
-        </Link>
+        <p className="px-2 py-1 w-max text-blue-950 bg-blue-100 rounded-lg">
+            {tag.name}
+        </p>
     )
 }

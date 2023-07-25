@@ -11,6 +11,7 @@ import { TagBudge } from "@/components/TagBudge"
 import { SetInline } from "@/components/SetInline"
 import { Post } from "@/lib/types"
 import nookies from "nookies"
+import Link from "next/link"
 
 type PostWithHtml = Post & { contentHtml: string }
 type Props = {
@@ -30,9 +31,15 @@ const PostDetail: NextPage<Props> = ({ post }) => {
         <SetInline>
             <h1 className="mb-4 text-4xl font-bold">{post.title}</h1>
             <div className="flex gap-2">
-                {post.tags.map((tag) => {
-                    return <TagBudge key={tag.id} tag={tag} />
-                })}
+                {post.tags.map((tag) => (
+                    <Link
+                        className="duration-200 hover:opacity-80"
+                        key={tag.id}
+                        href={`/posts/t/${tag.id}/p/1`}
+                    >
+                        <TagBudge key={tag.id} tag={tag} />
+                    </Link>
+                ))}
             </div>
             <div className="mb-8 sm:flex sm:gap-8">
                 <p>作成日 {createdAt.toLocaleDateString(undefined, options)}</p>

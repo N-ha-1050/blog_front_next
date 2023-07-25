@@ -7,6 +7,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import markdownItPlainText from "markdown-it-plain-text"
 import { TagBudge } from "@/components/TagBudge"
 import { Tag } from "@/lib/types"
+import Link from "next/link"
 
 type Props = {
     tag: Tag
@@ -17,7 +18,7 @@ const PostTagList: NextPage<Props> = ({ tag, posts }: Props) => {
     // const {count, page, has_next: hasNext, has_previous:hasPrevious, num_page: numPage} = posts
     return (
         <SetCenter>
-            <h1 className="mb-8 text-4xl font-bold flex flex-row">
+            <h1 className="mb-8 text-4xl font-bold flex flex-row gap-2">
                 <TagBudge tag={tag} />
                 の記事一覧
             </h1>
