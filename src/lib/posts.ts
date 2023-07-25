@@ -1,3 +1,4 @@
+import { Account, Accounts } from "./auth"
 import { Cookies, getCookies } from "./cookie"
 import { Post, Posts, Tag, Tags } from "./types"
 
@@ -13,6 +14,9 @@ const getHeaders = ({ cookies }: { cookies: Cookies }) => {
     return headers
 }
 
+type ListType = Posts | Tags | Accounts
+type DetailType = Post | Tag | Account
+
 export type GetProps<GetUrlProps> = {
     cookies?: Cookies
     reqLoop?: boolean
@@ -26,12 +30,18 @@ type Get<T, GetUrlProps> = ({
 export type GetListUrlProps<GetUrlProps> = {
     page?: string | number
 } & GetUrlProps
-type GetList<T, GetUrlProps> = Get<T, GetListUrlProps<GetUrlProps>>
+type GetList<T extends ListType, GetUrlProps> = Get<
+    T,
+    GetListUrlProps<GetUrlProps>
+>
 
 export type GetDetailUrlProps<GetUrlProps> = {
     id: string | number
 } & GetUrlProps
-type GetDetail<T, GetUrlProps> = Get<T, GetDetailUrlProps<GetUrlProps>>
+type GetDetail<T extends DetailType, GetUrlProps> = Get<
+    T,
+    GetDetailUrlProps<GetUrlProps>
+>
 
 type GetUrl<GetUrlProps> = ({}: GetUrlProps) => string
 type GetListUrl<GetUrlProps> = GetUrl<GetListUrlProps<GetUrlProps>>
@@ -58,13 +68,13 @@ type GetListSearchUrl = GetListUrl<GetSearchUrlProps>
 type GetPages = () => Promise<number[]>
 type GetIds = () => Promise<number[]>
 
-type GenerateGetList = <T, Props>({
+type GenerateGetList = <T extends ListType, Props>({
     getUrl,
 }: {
     getUrl: GetListUrl<Props>
-}) => GetList<T, GetListUrlProps<Props>>
+}) => GetList<T, Props>
 
-export const generateGetList: GenerateGetList = <T, Props>({
+export const generateGetList: GenerateGetList = <T extends ListType, Props>({
     getUrl,
 }: {
     getUrl: GetListUrl<Props>
@@ -87,17 +97,20 @@ export const generateGetList: GenerateGetList = <T, Props>({
     return getList
 }
 
-type GenerateGetDetail = <T, Props>({
+type GenerateGetDetail = <T extends DetailType, Props>({
     getUrl,
 }: {
     getUrl: GetDetailUrl<Props>
-}) => GetDetail<T, GetDetailUrlProps<Props>>
-export const generateGetDetail: GenerateGetDetail = <T, Props>({
+}) => GetDetail<T, Props>
+export const generateGetDetail: GenerateGetDetail = <
+    T extends DetailType,
+    Props,
+>({
     getUrl,
 }: {
-    getUrl: GetDetailUrl<GetDetailUrlProps<Props>>
+    getUrl: GetDetailUrl<Props>
 }) => {
-    const getDetail: GetDetail<T, GetDetailUrlProps<Props>> = async ({
+    const getDetail: GetDetail<T, Props> = async ({
         cookies = {},
         reqLoop = false,
         ...getUrlProps
@@ -276,13 +289,34 @@ export const getTag = generateGetDetail<Tag, GetNormalUrlProps>({
 //     const tag = (await res.json()) as Tag
 //     return tag
 // }
+type GetListPages<Props> = (
+    getListProps: GetProps<GetListUrlProps<Props>>,
+) => Promise<number[]>
+export const generateGetListPages = <T extends ListType, Props>({
+    getList,
+}: {
+    getList: GetList<T, GetListUrlProps<Props>>
+}) => {
+    const getListPages: GetListPages<Props> = async (getListProps) => {
+        const list = await getList(getListProps)
+        const listPages = [...Array(list.num_pages)].map((_, i) => i + 1)
+        return listPages
+    }
+    return getListPages
+}
 
-// const generateGetListPages = <T, Props>({getList}: {getList: GetList<T, GetListUrlProps<Props>>}) => {
-//     const getListPages = async ({getListProps}: {getListProps: GetProps<GetListUrlProps<Props>>}) => {
-//         const list = await getList(getListProps)
-//         const listPages = [...Array(list.num_page)].map((_, i) => i + 1)
-//     }
-// }
+export const getPostsPages2 = generateGetListPages<Posts, GetNormalUrlProps>({
+    getList: getPosts,
+})
+export const getTagPostsPages2 = generateGetListPages<Posts, GetIdUrlProps>({
+    getList: getTagPosts,
+})
+export const getTagsPages2 = generateGetListPages<Tags, GetNormalUrlProps>({
+    getList: getTags,
+})
+export const getPostsTagPages2 = generateGetListPages<Posts, GetIdUrlProps>({
+    getList: getTagPosts,
+})
 
 export const getPostsPages = async ({ reqLoop }: { reqLoop?: boolean }) => {
     const posts = await getPosts({ reqLoop })
@@ -327,6 +361,37 @@ export const getPostsTagPages = async ({
     return postsPages
 }
 
+type GetListIds<Props> = (
+    getListProps: GetProps<GetListUrlProps<Props>>,
+) => Promise<number[]>
+const generateGetListIds = <T extends ListType, Props>({
+    getList,
+    getListPages,
+}: {
+    getList: GetList<T, GetListUrlProps<Props>>
+    getListPages: GetListPages<Props>
+}) => {
+    const getListIds: GetListIds<Props> = async (getListProps) => {
+        const listPages = await getListPages(getListProps)
+        const result = await Promise.all(
+            listPages.map(async (listPage) => {
+                const list = await getList({ ...getListProps, page: listPage })
+                return list.results.map((detail) => detail.id)
+            }),
+        )
+        const listIds = result.flat()
+        return listIds
+    }
+    return getListIds
+}
+export const getPostIds2 = generateGetListIds<Posts, GetNormalUrlProps>({
+    getList: getPosts,
+    getListPages: getPostsPages,
+})
+export const getTagIds2 = generateGetListIds<Tags, GetNormalUrlProps>({
+    getList: getTags,
+    getListPages: getTagsPages,
+})
 export const getPostIds = async ({ reqLoop }: { reqLoop?: boolean }) => {
     const postsPages = await getPostsPages({ reqLoop })
     const result = await Promise.all(
@@ -351,3 +416,27 @@ export const getTagIds = async ({ reqLoop = false }: { reqLoop?: boolean }) => {
     const tagIds = result.flat()
     return tagIds
 }
+
+// type GetAllDetail<T extends DetailType, Props> = (
+//     getListProps: GetProps<GetListUrlProps<Props>>,
+// ) => Promise<T[]>
+// const generateGetAllDetail = <T extends DetailType, List extends ListType, Props>({
+//     getList,
+//     getListPages,
+// }: {
+//     getList: GetList<List, Props>
+//     getListPages: GetListPages<Props>
+// }) => {
+//     const getAllDetail: GetAllDetail<T, Props> = async (getListProps) => {
+//         const listPages = await getListPages(getListProps)
+//         const result = await Promise.all(
+//             listPages.map(async listPage => {
+//                 const list = await getList({...getListProps, page: listPage})
+//                 return list.results
+//             })
+//         )
+//         const allDetail = result.flat()
+//         return allDetail
+//     }
+//     return getAllDetail
+// }

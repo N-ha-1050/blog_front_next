@@ -4,6 +4,7 @@ import {
     GetNormalUrlProps,
     GetProps,
     generateGetList,
+    generateGetListPages,
 } from "./posts"
 import { User } from "./types"
 
@@ -279,11 +280,15 @@ const getAccounts = generateGetList<Accounts, GetNormalUrlProps>({
     getUrl: getAccountsUrl,
 })
 
-const getAccountsPages = async (props: GetProps<GetNormalUrlProps>) => {
-    const accounts = await getAccounts(props)
-    const postsPages = [...Array(accounts.num_pages)].map((_, i) => i + 1)
-    return postsPages
-}
+const getAccountsPages = generateGetListPages<Accounts, GetNormalUrlProps>({
+    getList: getAccounts,
+})
+
+// const getAccountsPages2 = async (props: GetProps<GetNormalUrlProps>) => {
+//     const accounts = await getAccounts(props)
+//     const postsPages = [...Array(accounts.num_pages)].map((_, i) => i + 1)
+//     return postsPages
+// }
 
 export const getAllAccount = async (props: GetProps<GetNormalUrlProps>) => {
     const accountsPages = await getAccountsPages(props)
