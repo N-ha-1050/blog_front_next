@@ -13,24 +13,24 @@ export const Header = () => {
     const [isOpen, setOpen] = React.useState<boolean>(false)
     return (
         <header className="bg-blue-400">
-            <nav className="max-w-7xl mx-auto md:flex md:items-center md:justify-between py-2.5 px-5">
-                <div className="flex justify-between items-center">
+            <nav className="mx-auto max-w-7xl px-5 py-2.5 md:flex md:items-center md:justify-between">
+                <div className="flex items-center justify-between">
                     <Link
                         href="/"
                         // className="text-4xl text-blue-950 border-b border-transparent duration-200 hover:opacity-80 hover:border-blue-400"
-                        className="py-4 px-4 rounded-full text-4xl text-blue-950 border-2 border-transparent duration-200 hover:opacity-80 hover:border-blue-800"
+                        className="rounded-full border-2 border-transparent px-4 py-4 text-4xl text-blue-950 duration-200 hover:border-blue-800 hover:opacity-80"
                     >
                         N_ha
                     </Link>
                     <button
-                        className="text-blue-950 hover:bg-blue-200 m-2 p-2 rounded duration-200 hover:opacity-80 font-bold md:hidden"
+                        className="m-2 rounded p-2 font-bold text-blue-950 duration-200 hover:bg-blue-200 hover:opacity-80 md:hidden"
                         onClick={() => setOpen(!isOpen)}
                     >
                         Menu
                     </button>
                 </div>
                 <div className={`${isOpen ? "block" : "hidden"} md:block`}>
-                    <ul className="flex flex-col md:flex-row items-center divide-y md:divide-none p-2 bg-blue-300 md:bg-transparent rounded ">
+                    <ul className="flex flex-col items-center divide-y rounded bg-blue-300 p-2 md:flex-row md:divide-none md:bg-transparent ">
                         {menuContents.map((menuContent) => (
                             <MenuContent
                                 key={menuContent.text}

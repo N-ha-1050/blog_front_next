@@ -12,18 +12,18 @@ export const InputWithLabel = ({
 } & JSX.IntrinsicElements["input"]) => {
     return (
         <div>
-            <label htmlFor={htmlFor} className="block text-sm mb-2">
+            <label htmlFor={htmlFor} className="mb-2 block text-sm">
                 {label}
             </label>
             <input
-                className="p-4 w-full block ring-2 border-2 ring-transparent duration-200 border-blue-200 rounded-md text-sm outline-none focus:border-blue-400 focus:ring-blue-400"
+                className="block w-full rounded-md border-2 border-blue-200 p-4 text-sm outline-none ring-2 ring-transparent duration-200 focus:border-blue-400 focus:ring-blue-400"
                 {...props}
             />
-            {message && <p className="text-sm text-blue-500 mt-2">{message}</p>}
+            {message && <p className="mt-2 text-sm text-blue-500">{message}</p>}
             {typeof messages === "object" &&
                 Array.isArray(message) &&
                 message.map((message) => (
-                    <p className="text-sm text-blue-500 mt-2">{message}</p>
+                    <p className="mt-2 text-sm text-blue-500">{message}</p>
                 ))}{" "}
         </div>
     )

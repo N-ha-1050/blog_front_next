@@ -5,7 +5,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             <Header />
-            <main className="py-16 flex min-h-screen max-w-7xl mx-auto justify-center flex-col">
+            <main className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center py-16">
                 {children}
             </main>
         </>

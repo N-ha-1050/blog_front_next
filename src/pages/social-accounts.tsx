@@ -27,12 +27,12 @@ const SocialAccounts: NextPage<Props> = ({ providersAndAccounts }) => {
                 {providersAndAccounts.map((providerAndAccount) => (
                     <div
                         key={providerAndAccount.provider.name}
-                        className="grid grid-cols-3 gap-2 items-end border-b-2 border-blue-200 pb-2"
+                        className="grid grid-cols-3 items-end gap-2 border-b-2 border-blue-200 pb-2"
                     >
                         <h2 className="text-xl">
                             {providerAndAccount.provider.displayName}
                         </h2>
-                        <p className="text-blue-600 font-bold self-end justify-self-start">
+                        <p className="self-end justify-self-start font-bold text-blue-600">
                             {providerAndAccount.account
                                 ? "Connected"
                                 : "Unconnected"}
