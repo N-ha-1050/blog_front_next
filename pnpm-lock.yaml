@@ -23,6 +23,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.4.9
     version: 13.4.9(eslint@8.44.0)(typescript@5.1.6)
+  js-yaml:
+    specifier: ^4.1.0
+    version: 4.1.0
   markdown-it:
     specifier: ^13.0.1
     version: 13.0.1
@@ -32,6 +35,9 @@ dependencies:
   markdown-it-footnote:
     specifier: ^3.0.3
     version: 3.0.3
+  markdown-it-front-matter:
+    specifier: ^0.2.3
+    version: 0.2.3
   markdown-it-highlightjs:
     specifier: ^4.0.1
     version: 4.0.1
@@ -67,6 +73,9 @@ devDependencies:
   '@tailwindcss/typography':
     specifier: ^0.5.9
     version: 0.5.9(tailwindcss@3.3.2)
+  '@types/js-yaml':
+    specifier: ^4.0.5
+    version: 4.0.5
   '@types/markdown-it':
     specifier: ^12.2.3
     version: 12.2.3
@@ -321,6 +330,10 @@ packages:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.3.2
+    dev: true
+
+  /@types/js-yaml@4.0.5:
+    resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
     dev: true
 
   /@types/json5@0.0.29:
@@ -1808,6 +1821,10 @@ packages:
 
   /markdown-it-footnote@3.0.3:
     resolution: {integrity: sha512-YZMSuCGVZAjzKMn+xqIco9d1cLGxbELHZ9do/TSYVzraooV8ypsppKNmUJ0fVH5ljkCInQAtFpm8Rb3eXSrt5w==}
+    dev: false
+
+  /markdown-it-front-matter@0.2.3:
+    resolution: {integrity: sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA==}
     dev: false
 
   /markdown-it-highlightjs@4.0.1:

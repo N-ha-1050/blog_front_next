@@ -15,9 +15,11 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
+    "js-yaml": "^4.1.0",
     "markdown-it": "^13.0.1",
     "markdown-it-anchor": "^8.6.7",
     "markdown-it-footnote": "^3.0.3",
+    "markdown-it-front-matter": "^0.2.3",
     "markdown-it-highlightjs": "^4.0.1",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-plain-text": "^0.3.0",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",
     "@types/markdown-it-footnote": "^3.0.0",
     "prettier": "^3.0.0"
