@@ -35,6 +35,9 @@ dependencies:
   markdown-it-footnote:
     specifier: ^3.0.3
     version: 3.0.3
+  markdown-it-front-matter:
+    specifier: ^0.2.3
+    version: 0.2.3
   markdown-it-highlightjs:
     specifier: ^4.0.1
     version: 4.0.1
@@ -1818,6 +1821,10 @@ packages:
 
   /markdown-it-footnote@3.0.3:
     resolution: {integrity: sha512-YZMSuCGVZAjzKMn+xqIco9d1cLGxbELHZ9do/TSYVzraooV8ypsppKNmUJ0fVH5ljkCInQAtFpm8Rb3eXSrt5w==}
+    dev: false
+
+  /markdown-it-front-matter@0.2.3:
+    resolution: {integrity: sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA==}
     dev: false
 
   /markdown-it-highlightjs@4.0.1:
