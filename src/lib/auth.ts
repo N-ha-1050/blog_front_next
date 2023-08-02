@@ -242,6 +242,7 @@ export const socialDisconnect = async ({ account }: { account: Account }) => {
 }
 
 export const getUser = async ({ cookies }: { cookies?: Cookies }) => {
+    console.log("cookies", cookies)
     const headers = new Headers()
     headers.append("Content-Type", "application/json")
     if (cookies) headers.append("Cookie", getCookies(cookies || {}))

@@ -75,6 +75,7 @@ const Me: NextPage<Props> = ({ user }) => {
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const cookies = nookies.get(ctx)
     const user = await getUser({ cookies })
+    console.log("user", user)
     if (!user) return { redirect: { permanent: false, destination: "/login" } }
     return {
         props: {
