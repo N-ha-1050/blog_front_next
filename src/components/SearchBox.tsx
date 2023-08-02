@@ -11,9 +11,9 @@ const SearchBox = ({ search }: SearchBoxProps) => {
         router.push(`/posts/q/1?${params.toString()}`)
     }
     return (
-        <div className="flex mb-4 mx-4 gap-2 items-center border border-blue-800 p-2 rounded-lg">
+        <div className="mx-4 mb-4 flex items-center gap-2 rounded-lg border border-blue-800 p-2">
             <input
-                className="w-full block p-2 rounded border-transparent focus:border-blue-400 ring-2 ring-transparent outline-none focus:ring-blue-400 duration-200"
+                className="block w-full rounded border-transparent p-2 outline-none ring-2 ring-transparent duration-200 focus:border-blue-400 focus:ring-blue-400"
                 placeholder="Search Posts"
                 type="text"
                 value={text}
@@ -30,7 +30,7 @@ const SearchBox = ({ search }: SearchBoxProps) => {
                 Search
             </button>
             <button
-                className="rounded p-2 text-blue-950 font-bold hover:bg-blue-100 duration-200"
+                className="rounded p-2 font-bold text-blue-950 duration-200 hover:bg-blue-100"
                 onClick={() => {
                     setText("")
                     router.push(`/posts/q/1`)

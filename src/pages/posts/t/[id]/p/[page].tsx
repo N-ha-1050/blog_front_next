@@ -1,17 +1,13 @@
 import { NavBar } from "@/components/NavBar"
 import { PostsPreview, PostsWithPlainText } from "@/components/PostsPreview"
 import { SetCenter } from "@/components/SetCenter"
-import {
-    Tag,
-    getTag,
-    getTagIds,
-    getTagPosts,
-    getTagPostsPages,
-} from "@/lib/posts"
+import { getTag, getTagIds, getTagPosts, getTagPostsPages } from "@/lib/posts"
 import MarkdownIt from "markdown-it"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import markdownItPlainText from "markdown-it-plain-text"
 import { TagBudge } from "@/components/TagBudge"
+import { Tag } from "@/lib/types"
+import Link from "next/link"
 
 type Props = {
     tag: Tag
@@ -22,7 +18,7 @@ const PostTagList: NextPage<Props> = ({ tag, posts }: Props) => {
     // const {count, page, has_next: hasNext, has_previous:hasPrevious, num_page: numPage} = posts
     return (
         <SetCenter>
-            <h1 className="mb-8 text-4xl font-bold flex flex-row">
+            <h1 className="mb-8 flex flex-row gap-2 text-4xl font-bold">
                 <TagBudge tag={tag} />
                 の記事一覧
             </h1>
@@ -45,8 +41,12 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     ) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const tag = await getTag({ id: params.id })
-    const posts = await getTagPosts({ id: params.id, page: params.page })
+    const tag = await getTag({ id: params.id, reqLoop: true })
+    const posts = await getTagPosts({
+        id: params.id,
+        page: params.page,
+        reqLoop: true,
+    })
     const postsWithPlainText: PostsWithPlainText = {
         ...posts,
         results: posts.results.map((post) => {
@@ -62,10 +62,10 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const tagIds = await getTagIds()
+    const tagIds = await getTagIds({ reqLoop: true })
     const result = await Promise.all(
         tagIds.map(async (id) => {
-            const tagsPostspages = await getTagPostsPages({ id })
+            const tagsPostspages = await getTagPostsPages({ id, reqLoop: true })
             const paths = tagsPostspages.map((page) => ({
                 params: { id: id.toString(), page: page.toString() },
             }))

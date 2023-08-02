@@ -1,128 +1,325 @@
+import { Account, Accounts } from "./auth"
+import { Cookies, getCookies } from "./cookie"
+import { Post, Posts, Tag, Tags } from "./types"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-// const API_URL = "http://127.0.0.1:8000"
-// const API_URL = "https://api.blog.n-ha.cf"
 const PAGE_SIZE = 10
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-export type Tag = {
-    id: number
-    url: string
-    name: string
-}
-export type Tags = {
-    count: number
-    page: number
-    has_next: boolean
-    has_previous: boolean
-    num_pages: number
-    results: Tag[]
-}
-export type Post = {
-    id: number
-    url: string
-    title: string
-    content: string
-    is_visible: boolean
-    created_at: string
-    updated_at: string
-    tags: Tag[]
+const getHeaders = ({ cookies }: { cookies: Cookies }) => {
+    const headers = new Headers()
+    headers.append("Content-Type", "application/json")
+    headers.append("Cookie", getCookies(cookies))
+    return headers
 }
 
-export type Posts = {
-    count: number
-    page: number
-    has_next: boolean
-    has_previous: boolean
-    num_pages: number
-    results: Post[]
-}
+type ListType = Posts | Tags | Accounts
+type DetailType = Post | Tag | Account
 
-export const getPosts = async ({ page = 1 }: { page?: number | string }) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(
-            `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
-        )
-    }
-    // const res = await fetch(
-    //     `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
-    // )
-    const posts = (await res.json()) as Posts
-    return posts
-}
-export const getTagPosts = async ({
-    id,
-    page = 1,
+export type GetProps<GetUrlProps> = {
+    cookies?: Cookies
+    reqLoop?: boolean
+} & GetUrlProps
+type Get<T, GetUrlProps> = ({
+    cookies,
+    reqLoop,
+    ...getUrlProps
+}: GetProps<GetUrlProps>) => Promise<T>
+
+export type GetListUrlProps<GetUrlProps> = {
+    page?: string | number
+} & GetUrlProps
+type GetList<T extends ListType, GetUrlProps> = Get<
+    T,
+    GetListUrlProps<GetUrlProps>
+>
+
+export type GetDetailUrlProps<GetUrlProps> = {
+    id: string | number
+} & GetUrlProps
+type GetDetail<T extends DetailType, GetUrlProps> = Get<
+    T,
+    GetDetailUrlProps<GetUrlProps>
+>
+
+type GetUrl<GetUrlProps> = ({}: GetUrlProps) => string
+type GetListUrl<GetUrlProps> = GetUrl<GetListUrlProps<GetUrlProps>>
+// type GetListUrl2<GetUrlProps> = ({}: {page?:string|number} & GetUrlProps) => string
+type GetDetailUrl<GetUrlProps> = GetUrl<GetDetailUrlProps<GetUrlProps>>
+// type GetListUrl<GetUrlProps> = ({page, ...getListUrlProps}: GetListUrlProps<GetUrlProps>) => string
+// type GetDetailUrl<GetUrlProps> = ({id, ...getDetailUrlProps}: GetDetailUrlProps<GetUrlProps>) => string
+
+export type GetNormalUrlProps = {}
+export type GetListNormalUrl = GetListUrl<GetNormalUrlProps>
+export type GetDetailNormalUrl = GetDetailUrl<GetNormalUrlProps>
+
+type GetIdUrlProps = { id: number | string }
+type GetListIdUrl = GetListUrl<GetIdUrlProps>
+
+type GetSearchUrlProps = { search: string }
+type GetListSearchUrl = GetListUrl<GetSearchUrlProps>
+// type GetUrl<GetUrlProps> = (getUrlProps: GetUrlProps) => string
+// type GetNormalUrlProps = { page?: string | number }
+// type GetIdUrlProps = { page?: number | string; id: number | string }
+// type GetSearchUrlProps = { page?: number | string; search: string }
+
+// type GetDetail<T> = ({ id }: { id: number | string }) => Promise<T>
+type GetPages = () => Promise<number[]>
+type GetIds = () => Promise<number[]>
+
+type GenerateGetList = <T extends ListType, Props>({
+    getUrl,
 }: {
-    id: number | string
-    page?: number | string
-}) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(
-            `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
-        )
-    }
-    // const res = await fetch(
-    //     `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
-    // )
-    const posts = (await res.json()) as Posts
-    return posts
-}
+    getUrl: GetListUrl<Props>
+}) => GetList<T, Props>
 
-export const getSearchPosts = async ({
-    search = "",
-    page = 1,
+export const generateGetList: GenerateGetList = <T extends ListType, Props>({
+    getUrl,
 }: {
-    search?: string
-    page?: number | string
+    getUrl: GetListUrl<Props>
 }) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(
-            `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
-        )
+    const getList: GetList<T, Props> = async ({
+        cookies = {},
+        reqLoop = false,
+        ...getUrlProps
+    }) => {
+        const headers = getHeaders({ cookies })
+        const url = getUrl(getUrlProps as GetListUrlProps<Props>)
+        const fetchList = async () =>
+            await fetch(url, { headers, mode: "cors", credentials: "include" })
+        let res = await fetchList()
+        for (; reqLoop && !res.ok; await sleep(1000)) res = await fetchList()
+
+        const list = (await res.json()) as T
+        return list
     }
-    // const res = await fetch(
-    //     `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
-    // )
-    const posts = (await res.json()) as Posts
-    return posts
+    return getList
 }
 
-export const getTags = async ({ page = 1 }: { page?: number | string }) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+type GenerateGetDetail = <T extends DetailType, Props>({
+    getUrl,
+}: {
+    getUrl: GetDetailUrl<Props>
+}) => GetDetail<T, Props>
+export const generateGetDetail: GenerateGetDetail = <
+    T extends DetailType,
+    Props,
+>({
+    getUrl,
+}: {
+    getUrl: GetDetailUrl<Props>
+}) => {
+    const getDetail: GetDetail<T, Props> = async ({
+        cookies = {},
+        reqLoop = false,
+        ...getUrlProps
+    }) => {
+        const headers = getHeaders({ cookies })
+        const url = getUrl(getUrlProps as GetDetailUrlProps<Props>)
+        const fetchList = async () =>
+            await fetch(url, { headers, mode: "cors", credentials: "include" })
+        let res = await fetchList()
+        for (; reqLoop && !res.ok; await sleep(1000)) res = await fetchList()
+        const list = (await res.json()) as T
+        return list
     }
-    // const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
-    const tags = (await res.json()) as Tags
-    return tags
+    return getDetail
+}
+// const generateGetNormalList = <T>(getNormalUrl: GetUrl<GetNormalUrlProps>) => {
+//     const getNormalList: GetNormalList<T> = generateGetList<
+//         T,
+//         GetNormalUrlProps
+//     >({ getUrl: getNormalUrl })
+//     return getNormalList
+// }
+const getPostsUrl: GetListNormalUrl = ({ page = 1 }) =>
+    `${API_URL}/posts/?ordering=-id&page=${page}`
+export const getPosts = generateGetList<Posts, GetNormalUrlProps>({
+    getUrl: getPostsUrl,
+})
+
+// export const getPosts = async ({ page = 1, cookies = {}, reqLoop = false }) => {
+//     const headers = getHeaders({ cookies })
+//     const fetchPosts = async () =>
+//         await fetch(
+//             `${API_URL}/posts/?is_visible=true&ordering=-id&page=${page}`,
+//             { headers, mode: "cors", credentials: "include" },
+//         )
+//     let res = await fetchPosts()
+//     for (; reqLoop && !res?.ok; await sleep(1000)) res = await fetchPosts()
+//     const posts = (await res.json()) as Posts
+//     return posts
+// }
+
+// export const getPosts = async ({
+//     page = 1,
+//     token,
+//     csrftoken,
+//     sessionid,
+//     cookies,
+// }: {
+//     page?: number | string
+//     token?: string
+//     sessionid?: string
+//     csrftoken?: string
+//     cookies?: {
+//         [key: string]: string
+//     }
+// }) => {
+//     let res: Response | undefined = undefined
+//     const headers = new Headers()
+//     headers.append("Content-Type", "application/json")
+//     // if (token) headers.append("Authorization", `Token ${token}`)
+//     // if (sessionid) headers.append("Authorization", `SessionId ${sessionid}`)
+//     if (cookies) {
+//         const header_cookie = Object.entries(cookies)
+//             .map((entry) => {
+//                 const [key, value] = entry
+//                 return `${key}=${value}`
+//             })
+//             .join(";")
+//         headers.append("Cookie", header_cookie)
+//     }
+
+//     // for (; !res?.ok; await sleep(1000)) {
+//     res = await fetch(`${API_URL}/posts/?ordering=-id&page=${page}`, {
+//         headers,
+//         method: "GET",
+//         mode: "cors",
+//         credentials: "include",
+//     })
+//     console.log(res)
+//     // }
+//     const posts = (await res.json()) as Posts
+//     return posts
+// }
+
+const getTagPostsUrl: GetListIdUrl = ({ page = 1, id }) =>
+    `${API_URL}/posts/?tags=${id}&ordering=-id&page=${page}`
+export const getTagPosts = generateGetList<Posts, GetIdUrlProps>({
+    getUrl: getTagPostsUrl,
+})
+// export const getTagPosts = async ({
+//     id,
+//     page = 1,
+// }: {
+//     id: number | string
+//     page?: number | string
+// }) => {
+//     let res: Response | undefined = undefined
+//     for (; !res?.ok; await sleep(1000)) {
+//         res = await fetch(
+//             `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
+//         )
+//     }
+//     // const res = await fetch(
+//     //     `${API_URL}/posts/?is_visible=true&tags=${id}&ordering=-id&page=${page}`,
+//     // )
+//     const posts = (await res.json()) as Posts
+//     return posts
+// }
+
+const getSearchPostsUrl: GetListSearchUrl = ({ page = 1, search }) =>
+    `${API_URL}/posts/?ordering=-id&search=${search}&page=${page}`
+export const getSearchPosts = generateGetList<Posts, GetSearchUrlProps>({
+    getUrl: getSearchPostsUrl,
+})
+
+// export const getSearchPosts = async ({
+//     search = "",
+//     page = 1,
+// }: {
+//     search?: string
+//     page?: number | string
+// }) => {
+//     let res: Response | undefined = undefined
+//     for (; !res?.ok; await sleep(1000)) {
+//         res = await fetch(
+//             `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
+//         )
+//     }
+//     // const res = await fetch(
+//     //     `${API_URL}/posts/?is_visible=true&ordering=-id&search=${search}&page=${page}`,
+//     // )
+//     const posts = (await res.json()) as Posts
+//     return posts
+// }
+
+const getTagsUrl: GetListNormalUrl = ({ page = 1 }) =>
+    `${API_URL}/tags/?ordering=id&page=${page}`
+export const getTags = generateGetList<Tags, GetNormalUrlProps>({
+    getUrl: getTagsUrl,
+})
+
+// export const getTags = async ({ page = 1 }: { page?: number | string }) => {
+//     let res: Response | undefined = undefined
+//     for (; !res?.ok; await sleep(1000)) {
+//         res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+//     }
+//     // const res = await fetch(`${API_URL}/tags/?ordering=id&page=${page}`)
+//     const tags = (await res.json()) as Tags
+//     return tags
+// }
+
+const getPostUrl: GetDetailNormalUrl = ({ id }) => `${API_URL}/posts/${id}/`
+export const getPost = generateGetDetail<Post, GetNormalUrlProps>({
+    getUrl: getPostUrl,
+})
+// export const getPost = async ({ id }: { id: number | string }) => {
+//     let res: Response | undefined = undefined
+//     for (; !res?.ok; await sleep(1000)) {
+//         res = await fetch(`${API_URL}/posts/${id}/`)
+//     }
+//     // const res = await fetch(`${API_URL}/posts/${id}/`)
+//     const post = (await res.json()) as Post
+//     return post
+// }
+
+const getTagUrl: GetDetailNormalUrl = ({ id }) => `${API_URL}/tags/${id}/`
+export const getTag = generateGetDetail<Tag, GetNormalUrlProps>({
+    getUrl: getTagUrl,
+})
+// export const getTag = async ({ id }: { id: number | string }) => {
+//     let res: Response | undefined = undefined
+//     for (; !res?.ok; await sleep(1000)) {
+//         res = await fetch(`${API_URL}/tags/${id}/`)
+//     }
+//     // const res = await fetch(`${API_URL}/tags/${id}/`)
+//     const tag = (await res.json()) as Tag
+//     return tag
+// }
+type GetListPages<Props> = (
+    getListProps: GetProps<GetListUrlProps<Props>>,
+) => Promise<number[]>
+export const generateGetListPages = <T extends ListType, Props>({
+    getList,
+}: {
+    getList: GetList<T, GetListUrlProps<Props>>
+}) => {
+    const getListPages: GetListPages<Props> = async (getListProps) => {
+        const list = await getList(getListProps)
+        const listPages = [...Array(list.num_pages)].map((_, i) => i + 1)
+        return listPages
+    }
+    return getListPages
 }
 
-export const getPost = async ({ id }: { id: number | string }) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(`${API_URL}/posts/${id}/`)
-    }
-    // const res = await fetch(`${API_URL}/posts/${id}/`)
-    const post = (await res.json()) as Post
-    return post
-}
+export const getPostsPages2 = generateGetListPages<Posts, GetNormalUrlProps>({
+    getList: getPosts,
+})
+export const getTagPostsPages2 = generateGetListPages<Posts, GetIdUrlProps>({
+    getList: getTagPosts,
+})
+export const getTagsPages2 = generateGetListPages<Tags, GetNormalUrlProps>({
+    getList: getTags,
+})
+export const getPostsTagPages2 = generateGetListPages<Posts, GetIdUrlProps>({
+    getList: getTagPosts,
+})
 
-export const getTag = async ({ id }: { id: number | string }) => {
-    let res: Response | undefined = undefined
-    for (; !res?.ok; await sleep(1000)) {
-        res = await fetch(`${API_URL}/tags/${id}/`)
-    }
-    // const res = await fetch(`${API_URL}/tags/${id}/`)
-    const tag = (await res.json()) as Tag
-    return tag
-}
-
-export const getPostsPages = async () => {
-    const posts = await getPosts({})
+export const getPostsPages = async ({ reqLoop }: { reqLoop?: boolean }) => {
+    const posts = await getPosts({ reqLoop })
     // const postsNumPages = posts.num_pages
     const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
     // const postsCount = Math.ceil(posts.count / PAGE_SIZE)
@@ -130,26 +327,73 @@ export const getPostsPages = async () => {
     // console.log(`getPostsIds => ${postsIds}`)
     return postsPages
 }
-export const getTagPostsPages = async ({ id }: { id: number | string }) => {
-    const posts = await getTagPosts({ id })
+export const getTagPostsPages = async ({
+    id,
+    reqLoop = false,
+}: {
+    id: number | string
+    reqLoop?: boolean
+}) => {
+    const posts = await getTagPosts({ id, reqLoop })
     const postsPages = [...Array(posts.num_pages)].map((_, i) => i + 1)
     return postsPages
 }
-export const getTagsPages = async () => {
-    const tags = await getTags({})
+export const getTagsPages = async ({
+    reqLoop = false,
+}: {
+    reqLoop?: boolean
+}) => {
+    const tags = await getTags({ reqLoop })
     const tagsPages = [...Array(tags.num_pages)].map((_, i) => i + 1)
     return tagsPages
 }
-export const getPostsTagPages = async ({ id = 1 }: { id: number | string }) => {
-    const posts = await getTagPosts({ id })
+export const getPostsTagPages = async ({
+    id = 1,
+    reqLoop = false,
+}: {
+    id: number | string
+    reqLoop: boolean
+}) => {
+    const posts = await getTagPosts({ id, reqLoop })
     const postsCount = Math.ceil(posts.count / PAGE_SIZE)
     const postsPages = [...Array(postsCount)].map((_, i) => i + 1)
     // console.log(`getPostsIds => ${postsIds}`)
     return postsPages
 }
 
-export const getPostIds = async () => {
-    const postsPages = await getPostsPages()
+type GetListIds<Props> = (
+    getListProps: GetProps<GetListUrlProps<Props>>,
+) => Promise<number[]>
+const generateGetListIds = <T extends ListType, Props>({
+    getList,
+    getListPages,
+}: {
+    getList: GetList<T, GetListUrlProps<Props>>
+    getListPages: GetListPages<Props>
+}) => {
+    const getListIds: GetListIds<Props> = async (getListProps) => {
+        const listPages = await getListPages(getListProps)
+        const result = await Promise.all(
+            listPages.map(async (listPage) => {
+                const list = await getList({ ...getListProps, page: listPage })
+                return list.results.map((detail) => detail.id)
+            }),
+        )
+        const listIds = result.flat()
+        return listIds
+    }
+    return getListIds
+}
+export const getPostIds2 = generateGetListIds<Posts, GetNormalUrlProps>({
+    getList: getPosts,
+    getListPages: getPostsPages,
+})
+export const getTagIds2 = generateGetListIds<Tags, GetNormalUrlProps>({
+    getList: getTags,
+    getListPages: getTagsPages,
+})
+export const getPostIds = async ({ reqLoop }: { reqLoop?: boolean }) => {
+    const postsPages = await getPostsPages({ reqLoop })
     const result = await Promise.all(
         postsPages.map(async (page) => {
             const posts = await getPosts({ page })
@@ -161,14 +405,38 @@ export const getPostIds = async () => {
     return postIds
 }
 
-export const getTagIds = async () => {
-    const tagsPages = await getTagsPages()
+export const getTagIds = async ({ reqLoop = false }: { reqLoop?: boolean }) => {
+    const tagsPages = await getTagsPages({ reqLoop })
     const result = await Promise.all(
         tagsPages.map(async (page) => {
-            const tags = await getTags({ page })
+            const tags = await getTags({ page, reqLoop })
             return tags.results.map((tag) => tag.id)
         }),
     )
     const tagIds = result.flat()
     return tagIds
 }
+
+// type GetAllDetail<T extends DetailType, Props> = (
+//     getListProps: GetProps<GetListUrlProps<Props>>,
+// ) => Promise<T[]>
+// const generateGetAllDetail = <T extends DetailType, List extends ListType, Props>({
+//     getList,
+//     getListPages,
+// }: {
+//     getList: GetList<List, Props>
+//     getListPages: GetListPages<Props>
+// }) => {
+//     const getAllDetail: GetAllDetail<T, Props> = async (getListProps) => {
+//         const listPages = await getListPages(getListProps)
+//         const result = await Promise.all(
+//             listPages.map(async listPage => {
+//                 const list = await getList({...getListProps, page: listPage})
+//                 return list.results
+//             })
+//         )
+//         const allDetail = result.flat()
+//         return allDetail
+//     }
+//     return getAllDetail
+// }

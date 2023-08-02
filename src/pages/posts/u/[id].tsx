@@ -1,16 +1,16 @@
-import { getPost, getPostIds } from "@/lib/posts"
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { getPost } from "@/lib/posts"
+import { GetServerSideProps, NextPage } from "next"
 
 import MarkdownIt from "markdown-it"
-import markdownItFrontMatter from "markdown-it-front-matter"
-// import markdownItAnchor from "markdown-it-anchor"
-// import markdownItTocRight from "markdown-it-toc-done-right"
+import markdownItAnchor from "markdown-it-anchor"
+import markdownItTocRight from "markdown-it-toc-done-right"
 import markdownItFootnote from "markdown-it-footnote"
 import markdownItHighlightjs from "markdown-it-highlightjs"
 import markdownItKatex from "markdown-it-katex"
 import { TagBudge } from "@/components/TagBudge"
 import { SetInline } from "@/components/SetInline"
 import { Post } from "@/lib/types"
+import nookies from "nookies"
 import Link from "next/link"
 
 type PostWithHtml = Post & { contentHtml: string }
@@ -37,7 +37,7 @@ const PostDetail: NextPage<Props> = ({ post }) => {
                         key={tag.id}
                         href={`/posts/t/${tag.id}/p/1`}
                     >
-                        <TagBudge tag={tag} />
+                        <TagBudge key={tag.id} tag={tag} />
                     </Link>
                 ))}
             </div>
@@ -52,49 +52,30 @@ const PostDetail: NextPage<Props> = ({ post }) => {
         </SetInline>
     )
 }
-export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    const cookies = nookies.get(ctx)
+
     const { params } = ctx
     if (!(typeof params?.id === "string")) {
         throw new Error(`Could not get a post id from params: ${params}`)
     }
-    const post = await getPost({ id: params.id, reqLoop: true })
+    const post = await getPost({ id: params.id, cookies })
     const md: MarkdownIt = new MarkdownIt()
-    md.use(markdownItFrontMatter, (fm:string) => {
-        // const fms = fm.split('\n')
-        // fm.split('\n').map(fms => {
-        //     const [key, value, ..._] = fms.split(':')
-        //     if (key.trim().toLowerCase() === 'title') {
-        //         post.title = value.trim()
-        //         console.log(value)
-        //     }
-        // })
+    md.use(markdownItAnchor, {
+        permalink: true,
+        permalinkBefore: true,
+        permalinkSymbol: "§",
     })
-    // md.use(markdownItAnchor, {
-    //     permalink: true,
-    //     permalinkBefore: true,
-    //     permalinkSymbol: "§",
-    // })
-    // md.use(markdownItTocRight, { listType: "ul" })
+    md.use(markdownItTocRight, { listType: "ul" })
     md.use(markdownItFootnote)
     md.use(markdownItHighlightjs)
     md.use(markdownItKatex)
     const postWithHtml: PostWithHtml = {
         ...post,
-        contentHtml: md.render(post.content),
+        contentHtml: md.render("## 目次\n[toc]\n\n" + post.content),
     }
     return {
         props: { post: postWithHtml },
-    }
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-    const postIds = await getPostIds({ reqLoop: true })
-    const paths = postIds.map((id) => ({
-        params: { id: id.toString() },
-    }))
-    return {
-        paths,
-        fallback: false,
     }
 }
 
