@@ -1,4 +1,4 @@
-import { Post, getPost } from "@/lib/posts"
+import { getPost } from "@/lib/posts"
 import MarkdownIt from "markdown-it"
 import markdownItFrontMatter from "markdown-it-front-matter"
 import markdownItFootnote from "markdown-it-footnote"
@@ -10,6 +10,7 @@ import { NextPage } from "next"
 import React from "react"
 import { SetInline } from "@/components/SetInline"
 import { load, JSON_SCHEMA } from "js-yaml"
+import { Post } from "@/lib/types"
 
 const Editor: NextPage = () => {
     const [id, setId] = React.useState<number>(1)

@@ -1,5 +1,5 @@
 import { load } from "js-yaml"
-import { Post } from "./posts"
+import { Post } from "./types"
 
 const getMdfromPost = ({
     post,
