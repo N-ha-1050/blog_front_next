@@ -2,11 +2,12 @@ import { getPost, getPostIds } from "@/lib/posts"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 
 import MarkdownIt from "markdown-it"
+import markdownItFrontMatter from "markdown-it-front-matter"
 import markdownItAnchor from "markdown-it-anchor"
 import markdownItTocRight from "markdown-it-toc-done-right"
 import markdownItFootnote from "markdown-it-footnote"
 import markdownItHighlightjs from "markdown-it-highlightjs"
-import markdownItKatex from "@traptitech/markdown-it-katex"
+import markdownItKatex from "markdown-it-katex"
 import { TagBudge } from "@/components/TagBudge"
 import { SetInline } from "@/components/SetInline"
 import { Post } from "@/lib/types"
@@ -58,18 +59,28 @@ export const getStaticProps: GetStaticProps<Props> = async (ctx) => {
     }
     const post = await getPost({ id: params.id, reqLoop: true })
     const md: MarkdownIt = new MarkdownIt()
-    md.use(markdownItAnchor, {
-        permalink: true,
-        permalinkBefore: true,
-        permalinkSymbol: "§",
+    md.use(markdownItFrontMatter, (fm:string) => {
+        // const fms = fm.split('\n')
+        // fm.split('\n').map(fms => {
+        //     const [key, value, ..._] = fms.split(':')
+        //     if (key.trim().toLowerCase() === 'title') {
+        //         post.title = value.trim()
+        //         console.log(value)
+        //     }
+        // })
     })
-    md.use(markdownItTocRight, { listType: "ul" })
+    // md.use(markdownItAnchor, {
+    //     permalink: true,
+    //     permalinkBefore: true,
+    //     permalinkSymbol: "§",
+    // })
+    // md.use(markdownItTocRight, { listType: "ul" })
     md.use(markdownItFootnote)
     md.use(markdownItHighlightjs)
     md.use(markdownItKatex)
     const postWithHtml: PostWithHtml = {
         ...post,
-        contentHtml: md.render("## 目次\n[toc]\n\n" + post.content),
+        contentHtml: md.render(post.content),
     }
     return {
         props: { post: postWithHtml },

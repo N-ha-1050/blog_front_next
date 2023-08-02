@@ -16,6 +16,7 @@ type Props = {
 }
 
 const PostSearchList: NextPage<Props> = ({ search, posts }) => {
+    const params = new URLSearchParams({ search })
     return (
         <SetCenter>
             <h1 className="mb-8 text-4xl font-bold">
@@ -24,7 +25,9 @@ const PostSearchList: NextPage<Props> = ({ search, posts }) => {
             <SearchBox search={search} />
             <PostsPreview realtime posts={posts} />
             <NavBar
-                getLink={(pageNum) => `/posts/q/${pageNum}?search=${search}`}
+                getLink={(pageNum) =>
+                    `/posts/q/${pageNum}?${params.toString()}`
+                }
                 page={posts.page}
                 numPages={posts.num_pages}
                 hasNext={posts.has_next}

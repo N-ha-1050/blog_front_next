@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@traptitech/markdown-it-katex':
-    specifier: ^3.6.0
-    version: 3.6.0
   '@types/node':
     specifier: 20.4.1
     version: 20.4.1
@@ -26,6 +23,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.4.9
     version: 13.4.9(eslint@8.44.0)(typescript@5.1.6)
+  js-yaml:
+    specifier: ^4.1.0
+    version: 4.1.0
   markdown-it:
     specifier: ^13.0.1
     version: 13.0.1
@@ -35,6 +35,9 @@ dependencies:
   markdown-it-footnote:
     specifier: ^3.0.3
     version: 3.0.3
+  markdown-it-front-matter:
+    specifier: ^0.2.3
+    version: 0.2.3
   markdown-it-highlightjs:
     specifier: ^4.0.1
     version: 4.0.1
@@ -73,6 +76,9 @@ devDependencies:
   '@tailwindcss/typography':
     specifier: ^0.5.9
     version: 0.5.9(tailwindcss@3.3.2)
+  '@types/js-yaml':
+    specifier: ^4.0.5
+    version: 4.0.5
   '@types/markdown-it':
     specifier: ^12.2.3
     version: 12.2.3
@@ -332,11 +338,9 @@ packages:
       tailwindcss: 3.3.2
     dev: true
 
-  /@traptitech/markdown-it-katex@3.6.0:
-    resolution: {integrity: sha512-CnJzTWxsgLGXFdSrWRaGz7GZ1kUUi8g3E9HzJmeveX1YwVJavrKYqysktfHZQsujdnRqV5O7g8FPKEA/aeTkOQ==}
-    dependencies:
-      katex: 0.16.8
-    dev: false
+  /@types/js-yaml@4.0.5:
+    resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
+    dev: true
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -711,11 +715,6 @@ packages:
   /commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
-
-  /commander@8.3.0:
-    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
-    engines: {node: '>= 12'}
-    dev: false
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -1751,13 +1750,6 @@ packages:
       object.values: 1.1.6
     dev: false
 
-  /katex@0.16.8:
-    resolution: {integrity: sha512-ftuDnJbcbOckGY11OO+zg3OofESlbR5DRl2cmN8HeWeeFIV7wTXvAOx8kEjZjobhA+9wh2fbKeO6cdcA9Mnovg==}
-    hasBin: true
-    dependencies:
-      commander: 8.3.0
-    dev: false
-
   /katex@0.6.0:
     resolution: {integrity: sha512-rS4mY3SvHYg5LtQV6RBcK0if7ur6plyEukAOV+jGGPqFImuzu8fHL6M752iBmRGoUyF0bhZbAPoezehn7xYksA==}
     hasBin: true
@@ -1840,6 +1832,10 @@ packages:
 
   /markdown-it-footnote@3.0.3:
     resolution: {integrity: sha512-YZMSuCGVZAjzKMn+xqIco9d1cLGxbELHZ9do/TSYVzraooV8ypsppKNmUJ0fVH5ljkCInQAtFpm8Rb3eXSrt5w==}
+    dev: false
+
+  /markdown-it-front-matter@0.2.3:
+    resolution: {integrity: sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA==}
     dev: false
 
   /markdown-it-highlightjs@4.0.1:
