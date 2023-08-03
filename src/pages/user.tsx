@@ -75,6 +75,7 @@ const Me: NextPage<Props> = ({ user }) => {
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     console.log("ctx", ctx)
     console.log("ctx.req.cookies", ctx.req.cookies)
+    console.log("ctx.req.headers.cookie", ctx.req.headers.cookie)
     const cookies = nookies.get(ctx)
     const user = await getUser({ cookies })
     console.log("user", user)

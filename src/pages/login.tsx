@@ -8,6 +8,7 @@ import { Button } from "@/components/Button"
 import { Title } from "@/components/Title"
 import { InputWithLabel } from "@/components/InputWithLabel"
 import { SocialLoginButton } from "@/components/SocialLoginButton"
+import { User } from "@/lib/types"
 type Props = {}
 const Login: NextPage<Props> = () => {
     const [username, setUsername] = React.useState<string>("")
@@ -15,9 +16,16 @@ const Login: NextPage<Props> = () => {
     const [data, setData] = React.useState<any>()
     const router = useRouter()
 
+    const [user, setUser] = React.useState<User>()
+    React.useEffect(() => {
+        getUser({}).then((resUser) => {
+            if (resUser) setUser(resUser)
+        })
+    }, [])
     return (
         <SetCenter>
             <Title>Login</Title>
+            <p>{user?.username}</p>
             <form>
                 <div className="grid w-60 gap-y-4 md:w-80">
                     <InputWithLabel
