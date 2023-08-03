@@ -53,6 +53,7 @@ const PostDetail: NextPage<Props> = ({ post }) => {
     )
 }
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+    console.log("ctx.req.headers.cookie", ctx.req.headers.cookie)
     const cookies = nookies.get(ctx)
 
     const { params } = ctx
