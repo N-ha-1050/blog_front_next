@@ -396,7 +396,7 @@ export const getPostIds = async ({ reqLoop }: { reqLoop?: boolean }) => {
     const postsPages = await getPostsPages({ reqLoop })
     const result = await Promise.all(
         postsPages.map(async (page) => {
-            const posts = await getPosts({ page })
+            const posts = await getPosts({ page, reqLoop })
             return posts.results.map((post) => post.id)
         }),
     )
