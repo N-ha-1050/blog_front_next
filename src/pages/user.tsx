@@ -8,6 +8,9 @@ import nookies from "nookies"
 import { Button } from "@/components/Button"
 import { Title } from "@/components/Title"
 import Link from "next/link"
+export const config = {
+    runtime: "nodejs", // or "edge"
+}
 type Props = {
     user: User
 }
