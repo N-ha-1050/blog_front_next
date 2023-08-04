@@ -9,9 +9,6 @@ import { Title } from "@/components/Title"
 import { InputWithLabel } from "@/components/InputWithLabel"
 import { SocialLoginButton } from "@/components/SocialLoginButton"
 import { User } from "@/lib/types"
-export const config = {
-    runtime: "nodejs", // or "edge"
-}
 type Props = {}
 const Login: NextPage<Props> = () => {
     const [username, setUsername] = React.useState<string>("")
